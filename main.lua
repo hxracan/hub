@@ -38,19 +38,18 @@ local Window = Library:CreateWindow({
 })
 
 local Tabs = {
-    Main        = Window:AddTab("🏠 Home", "house"),
-    Defense     = Window:AddTab("🛡️ Defense", "shield"),
-    Target      = Window:AddTab("⚔️ Attack", "sword"),
-    Grab        = Window:AddTab("✋ Grab", "hand"),
-    Player      = Window:AddTab("👤 Myself", "user"),
-    Misc        = Window:AddTab("🎮 Misc", "layers"),
-    Build       = Window:AddTab("✨ Sparkler", "box"),
-    Fun         = Window:AddTab("🎭 Troll", "smile"),
-    Extras      = Window:AddTab("🌟 Extra", "star"),
-    Keybinds    = Window:AddTab("⌨️ Keybind", "keyboard"),
-    Auras       = Window:AddTab("✨ Auras", "sparkles"),
-    Feedback    = Window:AddTab("💬 FeedBack", "hand"),
-    ["UI Settings"] = Window:AddTab("⚙️ Panel Settings", "settings")
+    Main        = Window:AddTab(" Home", "house"),
+    Defense     = Window:AddTab(" Defense", "shield"),
+    Target      = Window:AddTab(" Attack", "sword"),
+    Grab        = Window:AddTab(" Grab", "hand"),
+    Player      = Window:AddTab(" Myself", "user"),
+    Misc        = Window:AddTab(" Misc", "layers"),
+    Fun         = Window:AddTab(" Troll", "smile"),
+    Extras      = Window:AddTab(" Extra", "star"),
+    Keybinds    = Window:AddTab(" Keybind", "keyboard"),
+    Auras       = Window:AddTab(" Auras", "sparkles"),
+    Feedback    = Window:AddTab(" FeedBack", "hand"),
+    ["UI Settings"] = Window:AddTab(" Panel Settings", "settings")
 }
 
 -- Hide tab titles
@@ -68,9 +67,6 @@ task.spawn(function()
     end
 end)
 
--- ============================================================================
--- 📢 NOTIFICATION FUNCTION
--- ============================================================================
 
 local function notify(title, content, duration)
     Library:Notify({
@@ -80,9 +76,6 @@ local function notify(title, content, duration)
     })
 end
 
--- ============================================================================
--- 💬 CHAT MESSAGE ON LOAD
--- ============================================================================
 
 local function sendHubLoadedMessage()
     local message = " owner version loaded "
@@ -114,9 +107,6 @@ task.spawn(function()
     sendHubLoadedMessage()
 end)
 
--- ============================================================================
--- 🎨 PAINT PART SYSTEM (Anti-Paint)
--- ============================================================================
 
 local paintPartsBackup = {}
 local paintConnections = {}
@@ -182,9 +172,6 @@ local function setTouchQuery(state)
     end
 end
 
--- ============================================================================
--- 🛡️ ANTI-GUCCI (BLOB MAN)
--- ============================================================================
 
 local antiGucciConnection
 local safePosition
@@ -268,9 +255,6 @@ local function stopAntiGucci()
     end
 end
 
--- ============================================================================
--- 🚂 ANTI-GUCCI (TRAIN)
--- ============================================================================
 
 local antiGucciConnectionTrain
 local safePositionTrain
@@ -336,12 +320,9 @@ local function stopAntiGucciTrain()
     end
 end
 
--- ============================================================================
--- 🛡️ DEFENSE TAB - MAIN GROUP
--- ============================================================================
 
-local DefenseGroup = Tabs.Defense:AddLeftGroupbox("🛡️ Defense Main")
-local DefenseExtra = Tabs.Defense:AddRightGroupbox("🔧 Extra Defense")
+local DefenseGroup = Tabs.Defense:AddLeftGroupbox(" Defense Main")
+local DefenseExtra = Tabs.Defense:AddRightGroupbox(" Extra Defense")
 
 -- Anti-Grab Variables
 local antiGrabExplosionConn, antiGrabHeldConn, antiGrabStruggleConn, antiGrabHumConn, antiGrabAnchorConn
@@ -414,7 +395,7 @@ local AntiGrabEnabled = false
 local antiGrabConnection = nil
 
 DefenseGroup:AddToggle("AntiGrabBest", {
-    Text = "🤜 Anti Grab",
+    Text = " Anti Grab",
     Default = false,
     Callback = function(Value)
         AntiGrabEnabled = Value
@@ -481,7 +462,7 @@ local function antiBlob1F()
 end
 
 DefenseGroup:AddToggle("AntiBlobmanToggle", {
-    Text = "🛡️ Anti Blobman",
+    Text = " Anti Blobman",
     Default = false,
     Callback = function(on)
         if on then antiBlob1F() else antiBlob1T = false end
@@ -520,7 +501,7 @@ local function antiExplodeF()
 end
 
 DefenseGroup:AddToggle("AntiExplosionToggle", {
-    Text = "💥 Anti Explosion",
+    Text = " Anti Explosion",
     Default = false,
     Callback = function(on)
         antiExplodeT = on
@@ -575,7 +556,7 @@ local function hookBurn(char)
 end
 
 DefenseGroup:AddToggle("AntiBurnToggle", {
-    Text = "🔥 Anti Burn",
+    Text = " Anti Burn",
     Default = false,
     Callback = function(on)
         if on then hookBurn(LocalPlayer.Character) elseif hookBurnConn then hookBurnConn:Disconnect() end
@@ -588,7 +569,7 @@ local VOID_THRESHOLD = -50
 local SAFE_HEIGHT = 100
 
 DefenseGroup:AddToggle("AntiVoidToggle", {
-    Text = "🌌 Anti Void",
+    Text = " Anti Void",
     Default = false,
     Callback = function(on)
         if on then
@@ -617,7 +598,7 @@ DefenseGroup:AddToggle("AntiVoidToggle", {
 local antiStickyT = false
 
 DefenseGroup:AddToggle("AntiStickyToggle", {
-    Text = "🛡️ Anti Sticky",
+    Text = " Anti Sticky",
     Default = false,
     Callback = function(Value)
         antiStickyT = Value
@@ -639,7 +620,7 @@ if grabFolder then
 end
 
 DefenseGroup:AddToggle("AntiLagToggle", {
-    Text = "🛡️ Anti Lag",
+    Text = " Anti Lag",
     Default = false,
     Callback = function(Value)
         if Value then
@@ -675,7 +656,7 @@ DefenseGroup:AddToggle("AntiLagToggle", {
 
 -- Anti-Paint
 DefenseExtra:AddToggle("PaintDeleteToggle", {
-    Text = "🎨 Anti Paint",
+    Text = " Anti Paint",
     Default = false,
     Callback = function(state)
         if state then
@@ -694,7 +675,7 @@ DefenseExtra:AddToggle("PaintDeleteToggle", {
 local autoGucciActive = false
 
 DefenseExtra:AddToggle("AutoGucciToggle", {
-    Text = "🛡️ Anti Gucci (Blobman)",
+    Text = " Anti Gucci (Blobman)",
     Default = false,
     Callback = function(Value)
         autoGucciActive = Value
@@ -735,7 +716,7 @@ DefenseExtra:AddToggle("AutoGucciToggle", {
 local autoGucciActiveTrain = false
 
 DefenseExtra:AddToggle("AutoGucciToggle", {
-    Text = "🛡️ Anti Gucci (Train)",
+    Text = " Anti Gucci (Train)",
     Default = false,
     Callback = function(Value)
         autoGucciActiveTrain = Value
@@ -813,7 +794,7 @@ table.sort(DropdownValues)
 local SelectedToy = ToyList[DropdownValues[1]]
 
 DefenseExtra:AddDropdown("AntiInputLagToy", {
-    Text = "🎮 Input Lag Item",
+    Text = " Input Lag Item",
     Values = DropdownValues,
     Default = 1,
     Callback = function(Value)
@@ -823,7 +804,7 @@ DefenseExtra:AddDropdown("AntiInputLagToy", {
 
 -- Anti-Input Lag
 DefenseExtra:AddToggle("AntiInputLag", {
-    Text = "🚫 Anti Input Lag",
+    Text = " Anti Input Lag",
     Default = false,
     Callback = function(Value)
         _G.AntiInputLag = Value
@@ -880,7 +861,7 @@ DefenseExtra:AddToggle("AntiInputLag", {
 local tpActive = false
 
 DefenseExtra:AddToggle("ShurikenAntiKick", {
-    Text = "🔪 Anti Kick",
+    Text = " Anti Kick",
     Default = false,
     Callback = function(Value)
         _G.ShurikenAntiKick = Value
@@ -1086,13 +1067,11 @@ DefenseExtra:AddToggle("LoopTP", {
     end,
 })
 
--- ============================================================================
--- ⚔️ TARGET TAB
--- ============================================================================
 
-local TargetGroup = Tabs.Target:AddLeftGroupbox("🎯 Target Interaction")
-local BlobGroup = Tabs.Target:AddRightGroupbox("🦠 Blobman Kick")
-local WhitelistGroup = Tabs.Target:AddRightGroupbox("📋 Whitelist")
+
+local TargetGroup = Tabs.Target:AddLeftGroupbox(" Target Interaction")
+local BlobGroup = Tabs.Target:AddRightGroupbox(" Blobman Kick")
+local WhitelistGroup = Tabs.Target:AddRightGroupbox(" Whitelist")
 
 local selectedKickPlayer = nil
 local kickLoopEnabled = false
@@ -1121,7 +1100,7 @@ TargetGroup:AddDropdown("KickPlayerDropdown", {
     Values = getPlayerList(),
     Default = 1,
     Multi = false,
-    Text = "👥 Select Player for Kick",
+    Text = " Select Player for Kick",
     Callback = function(Value)
         selectedKickPlayer = getPlayerFromSelection(Value)
     end,
@@ -1138,7 +1117,7 @@ TargetGroup:AddButton({
 
 -- Loop Kick Grab
 TargetGroup:AddToggle("LoopKickGrabToggle", {
-    Text = "👢 Kick (Spam Grab)",
+    Text = " Kick (Spam Grab)",
     Default = false,
     Callback = function(on)
         kickLoopEnabled = on
@@ -1224,7 +1203,7 @@ TargetGroup:AddToggle("LoopKickGrabToggle", {
 local bringAllEnabled = false
 
 TargetGroup:AddToggle("BringAllGrabToggle", {
-    Text = "🔄 Bring All (Grab)",
+    Text = " Bring All ",
     Default = false,
     Callback = function(on)
         bringAllEnabled = on
@@ -1283,7 +1262,7 @@ TargetGroup:AddToggle("BringAllGrabToggle", {
 
 -- Bring All to Poison
 TargetGroup:AddToggle("BringAllToPosGrabToggle", {
-    Text = "☠️ Bring All to Poison (Grab)",
+    Text = " Bring All to Poison ",
     Default = false,
     Callback = function(on)
         bringAllEnabled = on
@@ -1345,7 +1324,7 @@ TargetGroup:AddToggle("BringAllToPosGrabToggle", {
 
 -- Bring All to Farm
 TargetGroup:AddToggle("BringAllToPosGrabToggle", {
-    Text = "🏠 Bring All to Farm (Grab)",
+    Text = " Bring All to Farm ",
     Default = false,
     Callback = function(on)
         bringAllEnabled = on
@@ -1407,7 +1386,7 @@ TargetGroup:AddToggle("BringAllToPosGrabToggle", {
 
 -- Bring All to Water
 TargetGroup:AddToggle("BringAllToNewPosGrabToggle", {
-    Text = "💧 Bring All to Water (Grab)",
+    Text = " Bring All to Water ",
     Default = false,
     Callback = function(on)
         bringAllEnabled = on
@@ -1469,14 +1448,14 @@ TargetGroup:AddToggle("BringAllToNewPosGrabToggle", {
 
 -- Whitelist Friends
 TargetGroup:AddToggle("WhitelistFriendsToggle", {
-    Text = "👥 Whitelist Friends",
+    Text = " Whitelist Friends",
     Default = false,
     Callback = function(on) end
 })
 
 -- Kick Ragdoll V2
 TargetGroup:AddToggle("LoopKickGrabToggle", {
-    Text = "👢 Kick Ragdoll (Spam Grab V2)",
+    Text = " Kick Ragdoll (Spam Grab V2)",
     Default = false,
     Callback = function(on)
         kickLoopEnabled = on
@@ -1558,7 +1537,7 @@ TargetGroup:AddToggle("LoopKickGrabToggle", {
 
 -- Ragdoll Snowball
 TargetGroup:AddToggle("RagdollSnowballKick", {
-    Text = "❄️ Ragdoll Snowball",
+    Text = " Ragdoll Snowball",
     Default = false,
     Callback = function(on)
         local SpawnRemote = ReplicatedStorage:WaitForChild("MenuToys"):WaitForChild("SpawnToyRemoteFunction")
@@ -1617,7 +1596,7 @@ TargetGroup:AddToggle("RagdollSnowballKick", {
 local autoResumeKick = false
 
 BlobGroup:AddToggle("LoopKickToggle", {
-    Text = "🔄 Loop Kick (Grab + Blob)",
+    Text = " Loop Kick (Grab + Blob)",
     Default = false,
     Callback = function(on)
         kickLoopEnabled = on
@@ -1737,7 +1716,7 @@ local flingBAV = nil
 local originalPos = nil
 
 TargetGroup:AddToggle("PlayerFlingBtn", {
-    Text = "🌀 Fling",
+    Text = " Fling",
     Default = false,
     Callback = function(on)
         playerFlingActive = on
@@ -1987,7 +1966,7 @@ end)
 local DestroyTargetGucciActive = false
 
 BlobGroup:AddToggle("DestroyTargetGucci", {
-    Text = "💀 Destroy Gucci (Sit)",
+    Text = " Destroy Gucci (Sit)",
     Default = false,
     Callback = function(Value)
         DestroyTargetGucciActive = Value
@@ -2135,7 +2114,7 @@ end
 
 -- Bring Button
 BlobGroup:AddButton({
-    Text = "🔄 Bring",
+    Text = " Bring",
     Func = function()
         if not selectedKickPlayer then return end
         
@@ -2289,7 +2268,7 @@ local AllowedItems = {
 local antiAntiLagEnabled = false
 
 TargetGroup:AddToggle("Remove AntiInputLag", {
-    Text = "🗑️ Remove Anti Input Lag",
+    Text = " Remove Anti Input Lag",
     Default = false,
     Callback = function(on)
         antiAntiLagEnabled = on
@@ -2344,11 +2323,11 @@ WhitelistGroup:AddDropdown("MultiWhitelist", {
     Values = getPlayerList(),
     Default = {},
     Multi = true,
-    Text = "👥 Whitelist People",
+    Text = " Whitelist People",
 })
 
 WhitelistGroup:AddButton({
-    Text = "🔄 Refresh List",
+    Text = " Refresh List",
     Func = function()
         Options.MultiWhitelist:SetValues(getPlayerList())
     end
@@ -2359,7 +2338,7 @@ local notifyActive = false
 local notifyConnection = nil
 
 WhitelistGroup:AddToggle("JoinedNotifyBtn", {
-    Text = "🔔 Target Joined Notify",
+    Text = " Target Joined Notify",
     Default = false,
     Callback = function(on)
         notifyActive = on
@@ -2413,11 +2392,8 @@ WhitelistGroup:AddToggle("JoinedNotifyBtn", {
     end
 })
 
--- ============================================================================
--- ✋ GRAB TAB
--- ============================================================================
 
-local GrabGroup = Tabs.Grab:AddLeftGroupbox("✋ Grab Actions & Customization")
+local GrabGroup = Tabs.Grab:AddLeftGroupbox(" Grab Actions & Customization")
 
 _G.GoxConfig = _G.GoxConfig or {}
 _G.GoxConfig.GrabSettings = {
@@ -2431,7 +2407,7 @@ _G.GoxConfig.GrabSettings = {
 }
 
 GrabGroup:AddSlider("SpinSpeedSlider", {
-    Text = "🌀 Spin Speed",
+    Text = " Spin Speed",
     Default = 100,
     Min = 0,
     Max = 10000,
@@ -2440,7 +2416,7 @@ GrabGroup:AddSlider("SpinSpeedSlider", {
 })
 
 GrabGroup:AddSlider("ThrowPowerSlider", {
-    Text = "💪 Throw Power",
+    Text = " Throw Power",
     Default = 750,
     Min = 1,
     Max = 20000,
@@ -2493,9 +2469,6 @@ workspace.ChildAdded:Connect(function(model)
     end
 end)
 
--- ============================================================================
--- NOCLIP SYSTEM
--- ============================================================================
 
 if not _G.GoxConfig then
     _G.GoxConfig = { HexColor = "#FFFFFF", Cpu = 24, GpuTemp = 52, CpuTemp = 49 }
@@ -2518,9 +2491,6 @@ if not _G.GoxConfig.NoclipConnection then
     end)
 end
 
--- ============================================================================
--- 👤 PLAYER TAB
--- ============================================================================
 
 local PlayerView = Tabs.Player:AddLeftGroupbox("👁️ View & Movement")
 local PlayerESP = Tabs.Player:AddRightGroupbox("👁️ ESP")
@@ -2544,7 +2514,7 @@ local function disableThirdPerson()
 end
 
 PlayerView:AddToggle("ThirdPersonToggle", {
-    Text = "🎥 3rd Person View",
+    Text = " 3rd Person View",
     Default = false,
     Callback = function(Value)
         if Value then enableThirdPerson() else disableThirdPerson() end
@@ -2556,7 +2526,7 @@ local spinningConnection
 local spinSpeed = 5
 
 PlayerView:AddToggle("SpinToggle", {
-    Text = "🌀 Spin Character",
+    Text = " Spin Character",
     Default = false,
     Callback = function(Value)
         if Value then
@@ -2577,7 +2547,7 @@ PlayerView:AddToggle("SpinToggle", {
 })
 
 PlayerView:AddSlider("SpinSpeed", {
-    Text = "⚡ Spin Speed",
+    Text = " Spin Speed",
     Default = 5,
     Min = 1,
     Max = 50,
@@ -2589,13 +2559,13 @@ PlayerView:AddSlider("SpinSpeed", {
 local infJump = false
 
 PlayerView:AddToggle("infJumpToggle", {
-    Text = "🦘 Infinite Jump",
+    Text = " Infinite Jump",
     Default = false,
     Callback = function(Value) infJump = Value end
 })
 
 PlayerView:AddToggle("NoclipToggle", {
-    Text = "🌀 Noclip",
+    Text = " Noclip",
     Default = false,
     Callback = function(Value) _G.GoxConfig.NoclipActive = Value end
 })
@@ -2605,7 +2575,7 @@ local currentWalkSpeed = 16
 local defaultWalkSpeed = 16
 
 PlayerView:AddToggle("SpeedToggle", {
-    Text = "💨 Speed Hack",
+    Text = " Speed Hack",
     Default = false,
     Callback = function(state)
         if state then
@@ -2624,7 +2594,7 @@ PlayerView:AddToggle("SpeedToggle", {
 })
 
 PlayerView:AddSlider("SpeedSlider", {
-    Text = "🏃 Walk Speed",
+    Text = " Walk Speed",
     Default = 16,
     Min = 16,
     Max = 300,
@@ -2638,7 +2608,7 @@ PlayerView:AddSlider("SpeedSlider", {
 })
 
 PlayerView:AddSlider("JumpPowerSlider", {
-    Text = "🦘 Jump Power",
+    Text = " Jump Power",
     Default = 50,
     Min = 50,
     Max = 350,
@@ -2658,9 +2628,6 @@ UserInputService.JumpRequest:Connect(function()
     end
 end)
 
--- ============================================================================
--- ESP SYSTEM
--- ============================================================================
 
 ESP_Config = ESP_Config or {
     Size = 100,
@@ -2823,7 +2790,7 @@ function CreateESP(plr)
 end
 
 PlayerESP:AddSlider("ESPSize", {
-    Text = "📏 ESP Size",
+    Text = " ESP Size",
     Min = 50,
     Max = 150,
     Default = ESP_Config.Size,
@@ -2831,7 +2798,7 @@ PlayerESP:AddSlider("ESPSize", {
 })
 
 PlayerESP:AddSlider("ESPTransparency", {
-    Text = "🌀 ESP Transparency",
+    Text = " ESP Transparency",
     Min = 0,
     Max = 1,
     Default = ESP_Config.Transparency,
@@ -2840,7 +2807,7 @@ PlayerESP:AddSlider("ESPTransparency", {
 })
 
 PlayerESP:AddSlider("HighlightRed", {
-    Text = "🔴 Highlight Red",
+    Text = " Highlight Red",
     Min = 0,
     Max = 255,
     Default = ESP_Config.HighlightColorR,
@@ -2848,7 +2815,7 @@ PlayerESP:AddSlider("HighlightRed", {
 })
 
 PlayerESP:AddSlider("HighlightGreen", {
-    Text = "🟢 Highlight Green",
+    Text = " Highlight Green",
     Min = 0,
     Max = 255,
     Default = ESP_Config.HighlightColorG,
@@ -2856,7 +2823,7 @@ PlayerESP:AddSlider("HighlightGreen", {
 })
 
 PlayerESP:AddSlider("HighlightBlue", {
-    Text = "🔵 Highlight Blue",
+    Text = " Highlight Blue",
     Min = 0,
     Max = 255,
     Default = ESP_Config.HighlightColorB,
@@ -2864,7 +2831,7 @@ PlayerESP:AddSlider("HighlightBlue", {
 })
 
 PlayerESP:AddToggle("HighlightESP", {
-    Text = "✨ Wall Highlight ESP",
+    Text = " Wall Highlight ESP",
     Default = false,
     Callback = function(Value)
         ESP_Config.HighlightESP = Value
@@ -2877,7 +2844,7 @@ PlayerESP:AddToggle("HighlightESP", {
 })
 
 PlayerESP:AddToggle("PlayerESP", {
-    Text = "👁️ Player ESP",
+    Text = " Player ESP",
     Default = false,
     Callback = function(Value)
         if Value then
@@ -2906,9 +2873,6 @@ PlayerESP:AddToggle("PlayerESP", {
     end
 })
 
--- ============================================================================
--- PERFORMANCE TAB (FPS Boost)
--- ============================================================================
 
 local oldProperties = {}
 local isBoosted = false
@@ -2926,7 +2890,7 @@ local function applyAndSave(obj, props)
 end
 
 PlayerPerf:AddButton({
-    Text = "⚡ Toggle FPS Boost",
+    Text = " Toggle FPS Boost",
     Func = function()
         if not isBoosted then
             applyAndSave(Lighting, {
@@ -2985,7 +2949,7 @@ PlayerPerf:AddButton({
 })
 
 PlayerPerf:AddButton({
-    Text = "🗑️ Delete FPS Boost",
+    Text = " Delete FPS Boost",
     Func = function()
         for obj, props in pairs(oldProperties) do
             if typeof(obj) == "Instance" and obj.Parent then
@@ -2998,9 +2962,6 @@ PlayerPerf:AddButton({
     end
 })
 
--- ============================================================================
--- MISCELLANEOUS TAB
--- ============================================================================
 
 local MiscGroup = Tabs.Misc:AddLeftGroupbox("🎮 Miscellaneous")
 
@@ -3017,190 +2978,9 @@ task.spawn(function()
     end
 end)
 
--- Dreamy Night Shader
-MiscGroup:AddToggle("DreamyNightShaderToggle", {
-    Text = "🌙 Dreamy Night Shader",
-    Default = false,
-    Callback = function(on)
-        if not _G.DreamyNightEffects then
-            _G.DreamyNightEffects = {}
-            local Blur = Instance.new("BlurEffect")
-            Blur.Size = 6
-            Blur.Enabled = false
-            Blur.Parent = Lighting
-            
-            local Bloom = Instance.new("BloomEffect")
-            Bloom.Intensity = 1.6
-            Bloom.Size = 90
-            Bloom.Threshold = 1.4
-            Bloom.Enabled = false
-            Bloom.Parent = Lighting
-            
-            local Color = Instance.new("ColorCorrectionEffect")
-            Color.Brightness = 0.15
-            Color.Contrast = -0.1
-            Color.Saturation = 0.25
-            Color.TintColor = Color3.fromRGB(210, 220, 255)
-            Color.Enabled = false
-            Color.Parent = Lighting
-            
-            local SunRays = Instance.new("SunRaysEffect")
-            SunRays.Intensity = 0.05
-            SunRays.Spread = 0.6
-            SunRays.Enabled = false
-            SunRays.Parent = Lighting
-            
-            local Atmosphere = Instance.new("Atmosphere")
-            Atmosphere.Density = 0.45
-            Atmosphere.Offset = 0.1
-            Atmosphere.Color = Color3.fromRGB(180, 190, 255)
-            Atmosphere.Decay = Color3.fromRGB(120, 130, 180)
-            Atmosphere.Glare = 0.15
-            Atmosphere.Haze = 3
-            Atmosphere.Enabled = false
-            Atmosphere.Parent = Lighting
-            
-            _G.DreamyNightEffects = { Blur, Bloom, Color, SunRays, Atmosphere }
-        end
-        
-        for _, effect in ipairs(_G.DreamyNightEffects) do
-            effect.Enabled = on
-        end
-        
-        if on then
-            Lighting.ClockTime = 0.5
-            Lighting.GlobalShadows = false
-            Lighting.Brightness = 2
-            Lighting.EnvironmentDiffuseScale = 0.2
-            Lighting.EnvironmentSpecularScale = 0.1
-            Lighting.FogEnd = 200000
-        end
-    end
-})
-
--- Triggerbot
-local Triggerbot = {
-    Enabled = false,
-    Connection = nil,
-    canGrab = true,
-    maxDistance = 20,
-    preGrabDelay = 0.00001,
-    postGrabDelay = 0.05,
-    lastTarget = nil,
-    lastHitTime = 0,
-    targetMemoryDuration = 0.1,
-    checkThrottle = 0.008,
-    lastCheck = 0
-}
-
-local rayParams = RaycastParams.new()
-rayParams.FilterType = Enum.RaycastFilterType.Exclude
-
-task.spawn(function()
-    local success, result = pcall(function()
-        return ReplicatedStorage.GamepassEvents.CheckForGamepass:InvokeServer(20837132)
-    end)
-    if success and result then Triggerbot.maxDistance = 29.3 end
-end)
-
-if ReplicatedStorage:FindFirstChild("GamepassEvents") and ReplicatedStorage.GamepassEvents:FindFirstChild("FurtherReachBoughtNotifier") then
-    ReplicatedStorage.GamepassEvents.FurtherReachBoughtNotifier.OnClientEvent:Connect(function()
-        Triggerbot.maxDistance = 29.3
-    end)
-end
-
-function Triggerbot:GetTarget()
-    local c = LocalPlayer.Character
-    if not c or not c:FindFirstChild("HumanoidRootPart") then return end
-    if Workspace:FindFirstChild("GrabParts") then return end
-    
-    local origin, dir = Camera.CFrame.Position, Camera.CFrame.LookVector
-    rayParams.FilterDescendantsInstances = { c, Workspace.Terrain }
-    local result = Workspace:Raycast(origin, dir * 1000, rayParams)
-    
-    if not result then
-        local dirs = { dir, (dir + Vector3.new(0, 0.075, 0)).Unit, (dir - Vector3.new(0, 0.075, 0)).Unit }
-        for _, d in ipairs(dirs) do
-            result = Workspace:Raycast(origin, d * 1000, rayParams)
-            if result then break end
-        end
-    end
-    
-    if not result then return end
-    
-    local hit = result.Instance
-    local model = hit:FindFirstAncestorOfClass("Model")
-    if not model or not model:FindFirstChildOfClass("Humanoid") or model == c then return end
-    
-    local hum = model:FindFirstChildOfClass("Humanoid")
-    if hum.Health <= 0 then return end
-    
-    local root = model:FindFirstChild("HumanoidRootPart")
-    if not root then return end
-    
-    local dist = (c.HumanoidRootPart.Position - root.Position).Magnitude
-    if dist > self.maxDistance then return end
-    
-    return model
-end
-
-function Triggerbot:OnHeartbeat()
-    if not self.Enabled or not self.canGrab then return end
-    if UserInputService:GetFocusedTextBox() then return end
-    if tick() - self.lastCheck < self.checkThrottle then return end
-    
-    self.lastCheck = tick()
-    local t = self:GetTarget()
-    
-    if t then
-        self.lastTarget = t
-        self.lastHitTime = tick()
-    elseif self.lastTarget and tick() - self.lastHitTime > self.targetMemoryDuration then
-        self.lastTarget = nil
-    end
-    
-    local c = LocalPlayer.Character
-    local root = self.lastTarget and self.lastTarget:FindFirstChild("HumanoidRootPart")
-    if not (self.lastTarget and c and c:FindFirstChild("HumanoidRootPart") and root) then return end
-    
-    if (c.HumanoidRootPart.Position - root.Position).Magnitude > self.maxDistance then
-        self.lastTarget = nil
-        return
-    end
-    
-    if self.lastTarget then
-        self.canGrab = false
-        task.spawn(function()
-            task.wait(self.preGrabDelay)
-            pcall(mouse1press)
-            local t0 = tick()
-            repeat
-                task.wait(0.02)
-            until not Workspace:FindFirstChild("GrabParts") or tick() - t0 > 1.6
-            task.wait(self.postGrabDelay)
-            self.canGrab = true
-            self.lastTarget = nil
-        end)
-    end
-end
-
-MiscGroup:AddToggle("TriggerbotToggle", {
-    Text = "🎯 Trigger Bot",
-    Default = Triggerbot.Enabled,
-    Callback = function(value)
-        Triggerbot.Enabled = value
-        if Triggerbot.Enabled and not Triggerbot.Connection then
-            Triggerbot.Connection = RunService.Heartbeat:Connect(function() Triggerbot:OnHeartbeat() end)
-        elseif not Triggerbot.Enabled and Triggerbot.Connection then
-            Triggerbot.Connection:Disconnect()
-            Triggerbot.Connection = nil
-        end
-    end
-})
-
 -- No Barrier Collision
 MiscGroup:AddToggle("NoBarrierCollision", {
-    Text = "🚫 Ignore House Barriers",
+    Text = " Ignore House Barriers",
     Default = false,
     Callback = function(Value)
         local plots = workspace:FindFirstChild("Plots")
@@ -3220,7 +3000,7 @@ MiscGroup:AddToggle("NoBarrierCollision", {
 local PacketSpamAmount = 100
 
 MiscGroup:AddSlider("PacketAmountSlider", {
-    Text = "📦 Packet Lag Amount",
+    Text = " Packet Lag Amount",
     Default = 100,
     Min = 10,
     Max = 5000,
@@ -3229,7 +3009,7 @@ MiscGroup:AddSlider("PacketAmountSlider", {
 })
 
 MiscGroup:AddToggle("PacketLagToggle", {
-    Text = "📦 Packet Lag",
+    Text = " Packet Lag",
     Default = false,
     Callback = function(Value)
         _G.PacketLagActive = Value
@@ -3263,7 +3043,7 @@ MiscGroup:AddToggle("PacketLagToggle", {
 local autoResetEnabled = false
 
 MiscGroup:AddToggle("AutoResetToggle", {
-    Text = "🔄 Auto Reset",
+    Text = " Auto Reset",
     Default = false,
     Callback = function(on)
         autoResetEnabled = on
@@ -3285,7 +3065,7 @@ MiscGroup:AddToggle("AutoResetToggle", {
 
 -- FOV Slider
 MiscGroup:AddSlider("FOVSlider", {
-    Text = "👁️ Field of View",
+    Text = " Field of View",
     Default = 90,
     Min = 1,
     Max = 120,
@@ -3298,10 +3078,10 @@ MiscGroup:AddSlider("FOVSlider", {
 -- ⚙️ UI SETTINGS TAB
 -- ============================================================================
 
-local MenuGroup = Tabs["UI Settings"]:AddLeftGroupbox("⚙️ Menu")
+local MenuGroup = Tabs["UI Settings"]:AddLeftGroupbox(" Menu")
 
-MenuGroup:AddButton("❌ Unload Script", function() Library:Unload() end)
-MenuGroup:AddLabel("⌨️ Menu Keybind"):AddKeyPicker("MenuKeybind", {
+MenuGroup:AddButton(" Unload Script", function() Library:Unload() end)
+MenuGroup:AddLabel(" Menu Keybind"):AddKeyPicker("MenuKeybind", {
     Default = "RightShift",
     NoUI = true,
     Text = "Menu Keybind"
@@ -3325,11 +3105,8 @@ Players.PlayerAdded:Connect(function(plr)
     end
 end)
 
--- ============================================================================
--- 🎭 FUN/TROLL TAB
--- ============================================================================
 
-local FanGroup = Tabs.Fun:AddLeftGroupbox("🎭 Troll")
+local FanGroup = Tabs.Fun:AddLeftGroupbox(" Troll")
 
 -- Black Hole Kick Detection
 local variants = {
@@ -3438,7 +3215,7 @@ local function stopJerkOff()
 end
 
 FanGroup:AddToggle("JerkOffToggle", {
-    Text = "💀 Jerk Off Animation",
+    Text = " Jerk Off ",
     Default = false,
     Callback = function(on)
         playJerkOffActive = on
@@ -3447,7 +3224,7 @@ FanGroup:AddToggle("JerkOffToggle", {
 })
 
 FanGroup:AddSlider("JerkSpeed", {
-    Text = "⚡ Animation Speed",
+    Text = " Animation Speed",
     Default = 1,
     Min = 0.1,
     Max = 5,
@@ -3459,7 +3236,7 @@ FanGroup:AddSlider("JerkSpeed", {
 })
 
 FanGroup:AddDropdown("JerkKey", {
-    Text = "⌨️ Toggle Key",
+    Text = " Toggle Key",
     Values = { "Q", "E", "R", "T" },
     Default = 1,
     Callback = function(v) selectedKey = Enum.KeyCode[v] end
@@ -3473,11 +3250,9 @@ UserInputService.InputBegan:Connect(function(input, gp)
     end
 end)
 
--- ============================================================================
--- ✨ AURAS TAB
--- ============================================================================
 
-local AurasGroup = Tabs.Auras:AddLeftGroupbox("✨ Auras")
+
+local AurasGroup = Tabs.Auras:AddLeftGroupbox(" Auras")
 
 -- Remove Anti-Kick Aura
 local removeAntiKickAuraActive = false
@@ -3486,20 +3261,20 @@ local removeAntiKickRadius = 15
 local useWhitelistRemoveAntiKick = true
 
 AurasGroup:AddDropdown("RemoveAntiKickAuraRadiusDropdown", {
-    Text = "🎯 Anti Kick Aura Radius",
+    Text = " Anti Kick Aura Radius",
     Values = { "10", "12", "14", "16", "18", "20" },
     Default = "15",
     Callback = function(value) removeAntiKickRadius = tonumber(value) end
 })
 
 AurasGroup:AddToggle("RemoveAntiKickAuraWhitelistToggle", {
-    Text = "👥 Use Whitelist (Friends)",
+    Text = " Use Whitelist (Friends)",
     Default = true,
     Callback = function(on) useWhitelistRemoveAntiKick = on end
 })
 
 AurasGroup:AddToggle("RemoveAntiKickAuraToggle", {
-    Text = "🗑️ Remove Anti Kick Aura",
+    Text = " Remove Anti Kick Aura",
     Default = false,
     Callback = function(on)
         removeAntiKickAuraActive = on
@@ -3566,20 +3341,20 @@ local function canKick(plr)
 end
 
 AurasGroup:AddDropdown("DualKickAuraRadius", {
-    Text = "🤲 Dual Kick Aura Radius",
+    Text = " Dual Kick Aura Radius",
     Values = { "10", "20", "30", "40", "50" },
     Default = "20",
     Callback = function(v) dualKickAuraRadius = tonumber(v) end
 })
 
 AurasGroup:AddToggle("DualKickAuraWhitelist", {
-    Text = "👥 Whitelist Friends",
+    Text = " Whitelist Friends",
     Default = true,
     Callback = function(v) dualKickAuraWhitelist = v end
 })
 
 AurasGroup:AddToggle("DualHandKickAura", {
-    Text = "🤲 Dual Hand Kick Aura",
+    Text = " Dual Hand Kick Aura",
     Default = false,
     Callback = function(on)
         dualKickAuraEnabled = on
@@ -3647,20 +3422,20 @@ local kickAura1Whitelist = true
 local kickAura1Conn
 
 AurasGroup:AddDropdown("KickAura1Radius", {
-    Text = "🦵 Kick Aura 1 Hand Radius",
+    Text = " Kick Aura 1 Hand Radius",
     Values = { "10", "20", "30", "40", "50" },
     Default = "20",
     Callback = function(v) kickAura1Radius = tonumber(v) end
 })
 
 AurasGroup:AddToggle("KickAura1Whitelist", {
-    Text = "👥 Whitelist Friends",
+    Text = " Whitelist Friends",
     Default = kickAura1Whitelist,
     Callback = function(v) kickAura1Whitelist = v end
 })
 
 AurasGroup:AddToggle("KickAura1Toggle", {
-    Text = "🦵 Kick Aura 1 Hand (Grab + Blob)",
+    Text = " Kick Aura 1 Hand (Grab + Blob)",
     Default = kickAura1Enabled,
     Callback = function(on)
         kickAura1Enabled = on
@@ -3714,9 +3489,6 @@ AurasGroup:AddToggle("KickAura1Toggle", {
     end
 })
 
--- ============================================================================
--- 🎬 ANIMATIONS TAB
--- ============================================================================
 
 local KeybindsGroup = Tabs.Keybinds:AddLeftGroupbox("⌨️ Keybinds")
 local AnimGroup = Tabs.Fun:AddLeftGroupbox("🎬 Animations")
@@ -3773,7 +3545,7 @@ local function stopAnimation()
 end
 
 AnimGroup:AddToggle("AnimToggle", {
-    Text = "🎭 Play Animation",
+    Text = " Play Animation",
     Default = false,
     Callback = function(on)
         animEnabled = on
@@ -3782,7 +3554,7 @@ AnimGroup:AddToggle("AnimToggle", {
 })
 
 AnimGroup:AddDropdown("AnimSelect", {
-    Text = "🎬 Select Animation",
+    Text = " Select Animation",
     Values = { "Crazy", "Insane", "Collapse", "Zombie" },
     Default = 1,
     Callback = function(v)
@@ -3792,7 +3564,7 @@ AnimGroup:AddDropdown("AnimSelect", {
 })
 
 AnimGroup:AddDropdown("AnimKeybind", {
-    Text = "⌨️ Toggle Key",
+    Text = " Toggle Key",
     Values = { "Q", "E", "R", "T", "F", "Z", "X", "C" },
     Default = 1,
     Callback = function(v) selectedAnimKey = Enum.KeyCode[v] end
@@ -3847,9 +3619,9 @@ local function SitOnBlobman()
 end
 
 -- Keybind for Sit on Blobman
-KeybindsGroup:AddLabel("🦠 Blobman"):AddKeyPicker("SitBlobmanKey", {
+KeybindsGroup:AddLabel(" Blobman"):AddKeyPicker("SitBlobmanKey", {
     Default = "Z",
-    Text = "Sit on nearest Blobman",
+    Text = "Sit on nearest Blob",
     NoUI = false,
     Callback = function() SitOnBlobman() end
 })
@@ -3876,7 +3648,7 @@ AnimGroup:AddToggle("FollowStare", {
 
 -- Fake Death
 AnimGroup:AddToggle("FakeDeathToggle", {
-    Text = "💀 Fake Death",
+    Text = " Fake Death",
     Default = false,
     Callback = function(on)
         local char = LocalPlayer.Character
@@ -3897,7 +3669,7 @@ AnimGroup:AddToggle("FakeDeathToggle", {
 -- Fake Lag
 local fakeLagConn
 AnimGroup:AddToggle("FakeLagToggle", {
-    Text = "🐌 Fake Lag",
+    Text = " Fake Lag",
     Default = false,
     Callback = function(on)
         if fakeLagConn then
@@ -3930,14 +3702,14 @@ end
 if #playerNames == 0 then table.insert(playerNames, "No Players") end
 
 FanGroup:AddDropdown("BangPlayerDropdown", {
-    Text = "🎯 Select Player",
+    Text = " Select Player",
     Values = playerNames,
     Default = 1,
     Callback = function(v) selectedBangPlayer = v end
 })
 
 FanGroup:AddSlider("BangSpeedSlider", {
-    Text = "⚡ Bang Speed",
+    Text = " Bang Speed",
     Default = 1,
     Min = 0.1,
     Max = 5,
@@ -3987,7 +3759,7 @@ end
 local followConnection = nil
 
 FanGroup:AddToggle("BangToggle", {
-    Text = "🔫 Bang Player",
+    Text = " Bang Player",
     Default = false,
     Callback = function(on)
         playBangActive = on
@@ -4009,7 +3781,7 @@ FanGroup:AddToggle("BangToggle", {
 
 -- Stick Shuriken to UFO
 FanGroup:AddToggle("UFOShurikenStick", {
-    Text = "🛸 Stick Shuriken to UFO",
+    Text = " Stick Shuriken to ufo",
     Default = false,
     Callback = function(state)
         if not state then return end
@@ -4072,7 +3844,7 @@ FanGroup:AddToggle("UFOShurikenStick", {
 
 -- MassLess Grab
 GrabGroup:AddToggle("MassLessGrabToggle", {
-    Text = "🪶 MassLess Grab",
+    Text = " MassLess Grab",
     Default = false,
     Callback = function(Value)
         _G.MassLessGrab = Value
@@ -4110,26 +3882,24 @@ GrabGroup:AddToggle("MassLessGrabToggle", {
     end
 })
 
--- ============================================================================
--- 📊 STATS & LOGS
--- ============================================================================
+
 
 function SetupStatsAndLogs(Tab)
-    local Groups = { Stats = Tab:AddRightGroupbox("📊 Stats") }
+    local Groups = { Stats = Tab:AddRightGroupbox(" Stats") }
     local L = {
-        PlayTime = Groups.Stats:AddLabel("⏱️ Playtime: 00:00:00"),
-        FPS = Groups.Stats:AddLabel("🎮 FPS: 0"),
-        Ping = Groups.Stats:AddLabel("📡 Ping: 0 ms"),
-        RAM = Groups.Stats:AddLabel("💾 RAM: 0 MB"),
-        Players = Groups.Stats:AddLabel("👥 Players: 0"),
-        Time = Groups.Stats:AddLabel("🕐 Time: 00:00:00"),
-        ServerAge = Groups.Stats:AddLabel("⏳ Server Age: 00:00:00"),
-        AccAge = Groups.Stats:AddLabel("📅 Acc Age: 0 days")
+        PlayTime = Groups.Stats:AddLabel(" Playtime: 00:00:00"),
+        FPS = Groups.Stats:AddLabel(" FPS: 0"),
+        Ping = Groups.Stats:AddLabel(" Ping: 0 ms"),
+        RAM = Groups.Stats:AddLabel(" RAM: 0 MB"),
+        Players = Groups.Stats:AddLabel(" Players: 0"),
+        Time = Groups.Stats:AddLabel(" Time: 00:00:00"),
+        ServerAge = Groups.Stats:AddLabel(" Server Age: 00:00:00"),
+        AccAge = Groups.Stats:AddLabel(" Acc Age: 0 days")
     }
     
     local LogsGroup = Tabs.Main:AddRightGroupbox("")
     LogsGroup:AddButton({
-        Text = "📋 Copy: no",
+        Text = " Copy: no",
         Func = function()
             setclipboard("no")
             if Library and Library.Notify then
@@ -4139,7 +3909,7 @@ function SetupStatsAndLogs(Tab)
     })
     LogsGroup:AddLabel(" ")
     LogsGroup:AddLabel("")
-    LogsGroup:AddLabel("📢 Latest Updates:")
+    LogsGroup:AddLabel(" Latest Updates:")
     LogsGroup:AddLabel("• 2026.06.08 - MORE UPDATE SOON!")
     LogsGroup:AddLabel("• 2026.06.08 - Added to maintab discord copy link button")
     LogsGroup:AddLabel("• 2026.06.08 - Added Whitelist to bring position function in attacktab")
@@ -4156,22 +3926,20 @@ function SetupStatsAndLogs(Tab)
             local elapsed = os.time() - JoinTime
             local dgt = math.floor(workspace.DistributedGameTime)
             L.PlayTime:SetText(string.format("⏱️ Playtime: %02d:%02d:%02d", math.floor(elapsed/3600), math.floor((elapsed%3600)/60), elapsed%60))
-            L.FPS:SetText("🎮 FPS: " .. math.floor(workspace:GetRealPhysicsFPS()))
-            L.Ping:SetText("📡 Ping: " .. math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue()) .. " ms")
-            L.RAM:SetText("💾 RAM: " .. math.floor(Stats:GetTotalMemoryUsageMb()) .. " MB")
-            L.Players:SetText("👥 Players: " .. #Players:GetPlayers() .. "/" .. Players.MaxPlayers)
-            L.Time:SetText("🕐 Time: " .. os.date("%X"))
-            L.ServerAge:SetText("⏳ Server Age: " .. string.format("%02d:%02d:%02d", math.floor(dgt/3600), math.floor((dgt%3600)/60), dgt%60))
-            L.AccAge:SetText("📅 Acc Age: " .. LocalPlayer.AccountAge .. " days")
+            L.FPS:SetText(" FPS: " .. math.floor(workspace:GetRealPhysicsFPS()))
+            L.Ping:SetText(" Ping: " .. math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue()) .. " ms")
+            L.RAM:SetText(" RAM: " .. math.floor(Stats:GetTotalMemoryUsageMb()) .. " MB")
+            L.Players:SetText(" Players: " .. #Players:GetPlayers() .. "/" .. Players.MaxPlayers)
+            L.Time:SetText(" Time: " .. os.date("%X"))
+            L.ServerAge:SetText(" Server Age: " .. string.format("%02d:%02d:%02d", math.floor(dgt/3600), math.floor((dgt%3600)/60), dgt%60))
+            L.AccAge:SetText(" Acc Age: " .. LocalPlayer.AccountAge .. " days")
         end
     end)
 end
 
 SetupStatsAndLogs(Tabs.Main)
 
--- ============================================================================
--- 🌟 EXTRAS TAB
--- ============================================================================
+
 
 _G.GoxConfig = _G.GoxConfig or {}
 _G.GoxConfig.FullBrightActive = false
@@ -4254,7 +4022,7 @@ _G.GoxConfig.ExtrasProtection = Tabs.Extras:AddRightGroupbox("🛡️ Safety & A
 _G.GoxConfig.ExtrasCharacter = Tabs.Extras:AddRightGroupbox("👤 Character Exploits")
 
 _G.GoxConfig.ExtrasVisuals:AddToggle("FullBrightToggle", {
-    Text = "☀️ Full Bright & No Fog",
+    Text = " Full Bright & No Fog",
     Default = false,
     Callback = function(Value)
         _G.GoxConfig.FullBrightActive = Value
@@ -4271,19 +4039,19 @@ _G.GoxConfig.ExtrasVisuals:AddToggle("FullBrightToggle", {
 })
 
 _G.GoxConfig.ExtrasProtection:AddToggle("AntiAfkToggle", {
-    Text = "💤 Anti-AFK (Stay Online)",
+    Text = " Anti-AFK ",
     Default = false,
     Callback = function(Value) _G.GoxConfig.AntiAfkActive = Value end
 })
 
 _G.GoxConfig.ExtrasProtection:AddToggle("AntiReportToggle", {
-    Text = "🚫 Anti-Report / Admin Detector",
+    Text = " Anti-Report  Admin Detect",
     Default = false,
     Callback = function(Value) _G.GoxConfig.AntiReportActive = Value end
 })
 
 _G.GoxConfig.ExtrasProtection:AddToggle("AutoAntiLag", {
-    Text = "⚡ Auto Anti Lag",
+    Text = " Auto Anti Lag",
     Default = false,
     Callback = function(v)
         _G.GoxConfig.AutoAntiLagActive = v
@@ -4316,7 +4084,7 @@ _G.GoxConfig.ExtrasProtection:AddToggle("AutoAntiLag", {
     end
 })
 
-_G.GoxConfig.ExtrasCharacter:AddButton("🦵 Delete Legs", function()
+_G.GoxConfig.ExtrasCharacter:AddButton(" Delete Legs", function()
     pcall(function()
         local char = LocalPlayer.Character
         if char and char:FindFirstChild("Left Leg") and char:FindFirstChild("Right Leg") and char:FindFirstChild("Torso") then
@@ -4355,9 +4123,6 @@ _G.GoxConfig.ExtrasCharacter:AddButton("🦵 Delete Legs", function()
     end)
 end)
 
--- ============================================================================
--- 🪙 COIN FARM (Auto Spin)
--- ============================================================================
 
 _G.GoxConfig.AutoFarmCoins = false
 _G.GoxConfig.TP_Priority = 0
@@ -4438,10 +4203,10 @@ _G.GoxConfig.TeleportToLocation = function(loc)
     end
 end
 
-CoinFarmGroup = Tabs.Extras:AddRightGroupbox("🪙 Coin Farm")
-CoinFarmGroup:AddLabel("🎰 Auto Spin (Slots)")
-local TimeRemainingLabel = CoinFarmGroup:AddLabel("⏱️ Time Remaining: 0:00")
-local CoinsWonLabel = CoinFarmGroup:AddLabel("💰 Coins Won: 0")
+CoinFarmGroup = Tabs.Extras:AddRightGroupbox(" Coin Farm")
+CoinFarmGroup:AddLabel(" Auto Spin (Slots)")
+local TimeRemainingLabel = CoinFarmGroup:AddLabel(" Time Remaining: 0:00")
+local CoinsWonLabel = CoinFarmGroup:AddLabel(" Coins Won: 0")
 
 CoinFarmGroup:AddToggle("AutoSpinToggle", {
     Text = "🎰 Auto-Spin",
@@ -4486,11 +4251,8 @@ CoinFarmGroup:AddToggle("AutoSpinToggle", {
     end
 })
 
--- ============================================================================
--- 🎮 PLAYER VIEW GROUP (Blob Settings)
--- ============================================================================
 
-local PlayerViewGroup = Tabs.Player:AddLeftGroupbox("🎮 Player View")
+local PlayerViewGroup = Tabs.Player:AddLeftGroupbox(" Player View")
 local blobSpeedValue = 100
 local blobFlySpeed = 100
 local autoBlobReseat = false
@@ -4499,7 +4261,7 @@ local bodyGyro = nil
 local bodyVelocity = nil
 
 PlayerViewGroup:AddSlider("BlobSpeedSlider", {
-    Text = "🐌 Blobman Speed",
+    Text = " Blobman Speed",
     Default = 100,
     Min = 0,
     Max = 300,
@@ -4508,7 +4270,7 @@ PlayerViewGroup:AddSlider("BlobSpeedSlider", {
 })
 
 PlayerViewGroup:AddSlider("BlobFlySpeedSlider", {
-    Text = "✈️ Blob Fly Speed",
+    Text = " Blob Fly Speed",
     Default = 100,
     Min = 0,
     Max = 500,
@@ -4516,14 +4278,14 @@ PlayerViewGroup:AddSlider("BlobFlySpeedSlider", {
     Callback = function(Value) blobFlySpeed = Value end
 })
 
-PlayerViewGroup:AddToggle("AutoBlobReseat", {
-    Text = "🔄 Auto Blob ReSeat",
+PlayerViewGroup:AddToggle("AutoBlobsit", {
+    Text = " Auto Blob sit",
     Default = false,
-    Callback = function(v) autoBlobReseat = v end
+    Callback = function(v) autoBlobsit = v end
 })
 
 PlayerViewGroup:AddToggle("BlobFlyToggle", {
-    Text = "✈️ Blob Fly",
+    Text = " Blob Fly",
     Default = false,
     Callback = function(v) blobFlyEnabled = v end
 })
@@ -4608,9 +4370,6 @@ task.spawn(function()
     end
 end)
 
--- ============================================================================
--- 🌌 SKY CHANGER
--- ============================================================================
 
 _G.FZ = _G.FZ or {}
 _G.FZ.SkyPresets = {
@@ -4624,7 +4383,7 @@ _G.FZ.CurrentSky = "Default"
 
 _G.FZ.SkyGroup = Tabs.Player:AddLeftGroupbox("🌌 Sky Changer")
 _G.FZ.SkyGroup:AddDropdown("SkyDropdown", {
-    Text = "🎨 Select Sky",
+    Text = " Select Sky",
     Values = {"Default", "Night", "Midnight", "Sunset", "Purple Haze"},
     Default = 1,
     Callback = function(Value)
@@ -4647,7 +4406,7 @@ Lighting:GetPropertyChangedSignal("TimeOfDay"):Connect(function()
 end)
 
 _G.FZ.SkyGroup:AddButton({
-    Text = "🔄 Reset to Default",
+    Text = " Reset to Default",
     Func = function()
         _G.FZ.CurrentSky = "Default"
         local s = _G.FZ.SkyPresets["Default"]
@@ -4662,7 +4421,7 @@ _G.FZ.SkyGroup:AddButton({
 -- Ultra Graphics Preset
 local originalSettings = nil
 _G.FZ.SkyGroup:AddButton({
-    Text = "✨ Ultra Graphics (Good PC/Mobile)",
+    Text = "Graphics",
     Func = function()
         local Terrain = workspace.Terrain
         if not originalSettings then
@@ -4715,12 +4474,12 @@ _G.FZ.SkyGroup:AddButton({
         sunRays.Spread = 0.6
         sunRays.Parent = Lighting
         
-        print("✨ Ultra Graphics Activated!")
+        print(" Ultra Graphics Activated!")
     end
 })
 
 _G.FZ.SkyGroup:AddButton({
-    Text = "🗑️ Reset Graphics",
+    Text = " Reset Graphs",
     Func = function()
         if not originalSettings then
             print("Graphics are already at default!")
@@ -4752,16 +4511,12 @@ _G.FZ.SkyGroup:AddButton({
 })
 
 
--- 👤 PROFILE TAB
--- ============================================================================
 
 local ProfileGroup = Tabs.Main:AddLeftGroupbox("👤 Profile")
-ProfileGroup:AddLabel("📛 Username: " .. LocalPlayer.Name)
-ProfileGroup:AddLabel("✨ Display Name: " .. LocalPlayer.DisplayName)
-ProfileGroup:AddLabel("🆔 User ID: " .. LocalPlayer.UserId)
+ProfileGroup:AddLabel(" User: " .. LocalPlayer.Name)
+ProfileGroup:AddLabel(" Display Name: " .. LocalPlayer.DisplayName)
+ProfileGroup:AddLabel(" User ID: " .. LocalPlayer.UserId)
 
--- ============================================================================
--- 🎉 SUCCESS MESSAGE
--- ============================================================================
 
-notify("FatalityZ CL", " Script loaded successfully! ", 3)
+
+notify("sigma", " Script loaded successfully! ", 3)
