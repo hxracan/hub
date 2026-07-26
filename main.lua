@@ -2162,7 +2162,7 @@ BlobGroup:AddButton({
 
 -- Bring All Button
 BlobGroup:AddButton({
-    Text = "🔄 Bring All",
+    Text = " Bring All",
     Func = function()
         local myPlayer = LocalPlayer
         local char = myPlayer.Character
@@ -2418,11 +2418,11 @@ GrabGroup:AddSlider("ThrowPowerSlider", {
     Callback = function(v) _G.GoxConfig.GrabSettings.Strength = v end
 })
 
-GrabGroup:AddToggle("SpinGrab", {Text = "🌀 Spin Grab", Callback = function(v) _G.GoxConfig.GrabSettings.SpinActive = v end})
-GrabGroup:AddToggle("RagdollGrab", {Text = "💀 Ragdoll Grab", Callback = function(v) _G.GoxConfig.GrabSettings.RagdollActive = v end})
-GrabGroup:AddToggle("KickGrab", {Text = "👢 Kick Grab", Callback = function(v) _G.GoxConfig.GrabSettings.KickActive = v end})
-GrabGroup:AddToggle("ThrowStrengthToggle", {Text = "💨 Throw Strength", Callback = function(v) _G.GoxConfig.GrabSettings.ThrowEnabled = v end})
-GrabGroup:AddToggle("KillGrabToggle", {Text = "💀 Kill Grab", Callback = function(v) _G.GoxConfig.GrabSettings.KillEnabled = v end})
+GrabGroup:AddToggle("SpinGrab", {Text = " Spin Grab", Callback = function(v) _G.GoxConfig.GrabSettings.SpinActive = v end})
+GrabGroup:AddToggle("RagdollGrab", {Text = " Ragdoll Grab", Callback = function(v) _G.GoxConfig.GrabSettings.RagdollActive = v end})
+GrabGroup:AddToggle("KickGrab", {Text = " Kick Grab", Callback = function(v) _G.GoxConfig.GrabSettings.KickActive = v end})
+GrabGroup:AddToggle("ThrowStrengthToggle", {Text = " Throw Strength", Callback = function(v) _G.GoxConfig.GrabSettings.ThrowEnabled = v end})
+GrabGroup:AddToggle("KillGrabToggle", {Text = " Kill Grab", Callback = function(v) _G.GoxConfig.GrabSettings.KillEnabled = v end})
 
 workspace.ChildAdded:Connect(function(model)
     if model.Name == "GrabParts" then
@@ -2486,9 +2486,9 @@ if not _G.GoxConfig.NoclipConnection then
 end
 
 
-local PlayerView = Tabs.Player:AddLeftGroupbox("👁️ View & Movement")
-local PlayerESP = Tabs.Player:AddRightGroupbox("👁️ ESP")
-local PlayerPerf = Tabs.Player:AddRightGroupbox("⚡ Performance")
+local PlayerView = Tabs.Player:AddLeftGroupbox(" View & Movement")
+local PlayerESP = Tabs.Player:AddRightGroupbox(" ESP")
+local PlayerPerf = Tabs.Player:AddRightGroupbox(" Performance")
 
 -- Third Person
 local function enableThirdPerson()
@@ -3084,8 +3084,8 @@ ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
 SaveManager:IgnoreThemeSettings()
 SaveManager:SetIgnoreIndexes({ "MenuKeybind" })
-ThemeManager:SetFolder("FatalityZ CL")
-SaveManager:SetFolder("FatalityZ CL/Configs")
+ThemeManager:SetFolder("ok hub")
+SaveManager:SetFolder("ok hub/configs")
 SaveManager:BuildConfigSection(Tabs["UI Settings"])
 ThemeManager:ApplyToTab(Tabs["UI Settings"])
 
@@ -3110,7 +3110,7 @@ local variants = {
 
 local function playKickSound()
     local s = Instance.new("Sound")
-    s.SoundId = "rbxassetid://79150789336480"
+    s.SoundId = ""
     s.Volume = 5
     s.PlayOnRemove = true
     s.Parent = SoundService
@@ -3119,7 +3119,7 @@ end
 
 local function notifyKick(displayName, username)
     Library:Notify({
-        Title = "FatalityZ CL",
+        Title = "nice",
         Description = displayName .. " (" .. username .. ") has been kicked",
         Time = 6,
     })
