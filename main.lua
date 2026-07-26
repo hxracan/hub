@@ -4127,18 +4127,18 @@ function SetupStatsAndLogs(Tab)
         AccAge = Groups.Stats:AddLabel("📅 Acc Age: 0 days")
     }
     
-    local LogsGroup = Tabs.Main:AddRightGroupbox("📜 Fix Logs & Updates")
+    local LogsGroup = Tabs.Main:AddRightGroupbox("")
     LogsGroup:AddButton({
-        Text = "📋 Copy: discord.gg/Tc7emjXv2V",
+        Text = "📋 Copy: no",
         Func = function()
-            setclipboard("https://discord.gg/Tc7emjXv2V")
+            setclipboard("no")
             if Library and Library.Notify then
-                Library:Notify({ Text = "✅ Discord link copied!", Time = 2 })
+                Library:Notify({ Text = "!", Time = 2 })
             end
         end
     })
     LogsGroup:AddLabel(" ")
-    LogsGroup:AddLabel("💡 Tip: Click the button above to copy invite!")
+    LogsGroup:AddLabel("")
     LogsGroup:AddLabel("📢 Latest Updates:")
     LogsGroup:AddLabel("• 2026.06.08 - MORE UPDATE SOON!")
     LogsGroup:AddLabel("• 2026.06.08 - Added to maintab discord copy link button")
