@@ -29,8 +29,8 @@ Library.ForceCheckbox = false
 
 
 local Window = Library:CreateWindow({
-    Title = "ok",
-    Footer = "LLLLLLLLL",
+    Title = "LIT hub",
+    Footer = "Locked In Twin",
     NotifySide = "Right",
     ShowCustomCursor = false,
 })
@@ -2957,7 +2957,7 @@ PlayerPerf:AddButton({
 })
 
 
-local MiscGroup = Tabs.Misc:AddLeftGroupbox("🎮 Miscellaneous")
+local MiscGroup = Tabs.Misc:AddLeftGroupbox(" misc ")
 
 -- Water Parts for later use
 local waterParts = {}
@@ -3059,7 +3059,7 @@ MiscGroup:AddToggle("AutoResetToggle", {
 
 -- FOV Slider
 MiscGroup:AddSlider("FOVSlider", {
-    Text = " Field of View",
+    Text = " fov",
     Default = 90,
     Min = 1,
     Max = 120,
@@ -3481,8 +3481,8 @@ AurasGroup:AddToggle("KickAura1Toggle", {
 })
 
 
-local KeybindsGroup = Tabs.Keybinds:AddLeftGroupbox("⌨️ Keybinds")
-local AnimGroup = Tabs.Fun:AddLeftGroupbox("🎬 Animations")
+local KeybindsGroup = Tabs.Keybinds:AddLeftGroupbox(" Keybinds")
+local AnimGroup = Tabs.Fun:AddLeftGroupbox(" Animations")
 local animEnabled = false
 local currentTrack = nil
 local selectedAnimName = "Crazy"
@@ -4200,7 +4200,7 @@ local TimeRemainingLabel = CoinFarmGroup:AddLabel(" Time Remaining: 0:00")
 local CoinsWonLabel = CoinFarmGroup:AddLabel(" Coins Won: 0")
 
 CoinFarmGroup:AddToggle("AutoSpinToggle", {
-    Text = "🎰 Auto-Spin",
+    Text = " Auto-Spin",
     Default = false,
     Callback = function(Value)
         _G.GoxConfig.AutoFarmCoins = Value
@@ -4502,7 +4502,7 @@ _G.FZ.SkyGroup:AddButton({
 
 
 
-local ProfileGroup = Tabs.Main:AddLeftGroupbox("👤 Profile")
+local ProfileGroup = Tabs.Main:AddLeftGroupbox(" Profile")
 ProfileGroup:AddLabel(" User: " .. LocalPlayer.Name)
 ProfileGroup:AddLabel(" Display Name: " .. LocalPlayer.DisplayName)
 ProfileGroup:AddLabel(" User ID: " .. LocalPlayer.UserId)
