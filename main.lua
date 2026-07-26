@@ -26,9 +26,7 @@ local Options = Library.Options
 local Toggles = Library.Toggles
 Library.ForceCheckbox = false
 
--- ============================================================================
--- 🪟 CREATE WINDOW & TABS
--- ============================================================================
+
 
 local Window = Library:CreateWindow({
     Title = "ok",
@@ -48,7 +46,6 @@ local Tabs = {
     Extras      = Window:AddTab(" Extra", "star"),
     Keybinds    = Window:AddTab(" Keybind", "keyboard"),
     Auras       = Window:AddTab(" Auras", "sparkles"),
-    Feedback    = Window:AddTab(" FeedBack", "hand"),
     ["UI Settings"] = Window:AddTab(" Panel Settings", "settings")
 }
 
@@ -650,9 +647,6 @@ DefenseGroup:AddToggle("AntiLagToggle", {
     end,
 })
 
--- ============================================================================
--- 🛡️ DEFENSE TAB - EXTRA GROUP
--- ============================================================================
 
 -- Anti-Paint
 DefenseExtra:AddToggle("PaintDeleteToggle", {
@@ -1042,7 +1036,7 @@ DefenseExtra:AddToggle("ShurikenAntiKick", {
 
 -- Loop TP
 DefenseExtra:AddToggle("LoopTP", {
-    Text = "🌀 Loop TP",
+    Text = " Loop TP",
     Default = false,
     Callback = function(Value)
         tpActive = Value
@@ -1107,7 +1101,7 @@ TargetGroup:AddDropdown("KickPlayerDropdown", {
 })
 
 TargetGroup:AddButton({
-    Text = "🔄 Refresh Player List",
+    Text = " Refresh Player List",
     Func = function()
         Options.KickPlayerDropdown:SetValues(getPlayerList())
         Options.KickPlayerDropdown:SetValue(nil)
@@ -3074,9 +3068,6 @@ MiscGroup:AddSlider("FOVSlider", {
     Callback = function(value) workspace.CurrentCamera.FieldOfView = value end
 })
 
--- ============================================================================
--- ⚙️ UI SETTINGS TAB
--- ============================================================================
 
 local MenuGroup = Tabs["UI Settings"]:AddLeftGroupbox(" Menu")
 
@@ -4506,7 +4497,6 @@ _G.FZ.SkyGroup:AddButton({
         if Lighting:FindFirstChild("UltraSunRays") then Lighting.UltraSunRays:Destroy() end
         
         originalSettings = nil
-        print("Default Graphics Restored!")
     end
 })
 
