@@ -4732,6 +4732,77 @@ MiscGroup:AddButton({
     end
 })
 
+-- Place this inside the TargetGroup (Attack tab) after the existing "Loop Kick Grab" toggle
+
+local loopKillAdvancedActive = false
+local loopKillAdvancedTask
+
+TargetGroup:AddToggle("LoopKillAdvanced", {
+    Text = "💀 Loop Kill (Advanced)",
+    Default = false,
+    Callback = function(on)
+        loopKillAdvancedActive = on
+        if on then
+            if not selectedKickPlayer then
+                Toggles.LoopKillAdvanced:SetValue(false)
+                return
+            end
+            local targetName = selectedKickPlayer.Name
+            loopKillAdvancedTask = task.spawn(function()
+                -- This is your exact LoopKillFunction, using your remotes
+                local RS = game:GetService("ReplicatedStorage")
+                local GE = RS:WaitForChild("GrabEvents")
+                local target = game.Players:FindFirstChild(targetName)
+                if not target then return end
+
+                while loopKillAdvancedActive and target and target.Parent do
+                    if not target.Character then
+                        task.wait(0.5)
+                        continue
+                    end
+                    local myChar = LocalPlayer.Character
+                    local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+                    local tChar = target.Character
+                    local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
+                    local tHum = tChar and tChar:FindFirstChild("Humanoid")
+                    if tRoot and tHum and tHum.Health > 0 and myRoot then
+                        local currentPos = myRoot.CFrame
+                        local attackStart = tick()
+                        while tick() - attackStart < 0.35 and loopKillAdvancedActive do
+                            if not tRoot.Parent then break end
+                            myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 2)
+                            myRoot.Velocity = Vector3.zero
+                            pcall(function()
+                                GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
+                                tHum:ChangeState(Enum.HumanoidStateType.Dead)
+                                tHum.Health = 0
+                                GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+                                GE.DestroyGrabLine:FireServer(tRoot)
+                            end)
+                            RunService.Heartbeat:Wait()
+                        end
+                        if myRoot then
+                            myRoot.CFrame = currentPos
+                            myRoot.Velocity = Vector3.zero
+                        end
+                        task.wait(1.2)
+                    else
+                        task.wait(0.5)
+                    end
+                end
+                local char = LocalPlayer.Character
+                local root = char and char:FindFirstChild("HumanoidRootPart")
+                if root then root.Velocity = Vector3.zero end
+            end)
+        else
+            if loopKillAdvancedTask then
+                task.cancel(loopKillAdvancedTask)
+                loopKillAdvancedTask = nil
+            end
+        end
+    end
+})
+
 
 
 
