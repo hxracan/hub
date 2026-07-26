@@ -4500,6 +4500,384 @@ _G.FZ.SkyGroup:AddButton({
     end
 })
 
+-- At the top of the Auras section, after existing aura variables
+local unstickAuraActive = false
+local unstickAuraConn
+
+-- Inside the AurasGroup (after other toggles, e.g., after "Remove Anti Kick Aura" toggle)
+AurasGroup:AddToggle("UnstickAura", {
+    Text = " Unstick Aura",
+    Default = false,
+    Callback = function(on)
+        unstickAuraActive = on
+        if unstickAuraConn then
+            unstickAuraConn:Disconnect()
+            unstickAuraConn = nil
+        end
+        if not on then return end
+        
+        unstickAuraConn = RunService.Heartbeat:Connect(function()
+            local target = selectedKickPlayer   -- uses the selected target from Attack tab
+            if not target then return end
+            local spawned = workspace:FindFirstChild(target.Name .. "SpawnedInToys")
+            if spawned then
+                for _, toyName in ipairs({"NinjaKunai", "NinjaShuriken", "AntiKick"}) do
+                    local toy = spawned:FindFirstChild(toyName)
+                    if toy then
+                        pcall(function()
+                            ReplicatedStorage.MenuToys.DestroyToy:FireServer(toy)
+                        end)
+                    end
+                end
+            end
+        end)
+    end
+})
+
+local killAuraActive = false
+local killAuraRadius = 30
+local killAuraConn
+local killAuraUseBlob = false  -- you can link a dropdown later
+
+AurasGroup:AddSlider("KillAuraRadius", {
+    Text = " Kill Aura Radius",
+    Default = 30,
+    Min = 10,
+    Max = 100,
+    Rounding = 0,
+    Callback = function(v) killAuraRadius = v end
+})
+
+AurasGroup:AddToggle("KillAura", {
+    Text = " Kill Aura",
+    Default = false,
+    Callback = function(on)
+        killAuraActive = on
+        if killAuraConn then killAuraConn:Disconnect(); killAuraConn = nil end
+        if not on then return end
+        
+        killAuraConn = RunService.Heartbeat:Connect(function()
+            local myRoot = getRoot(LocalPlayer.Character)  -- use your existing getRoot helper
+            if not myRoot then return end
+            for _, plr in ipairs(Players:GetPlayers()) do
+                if plr ~= LocalPlayer and plr.Character then
+                    local tr = getRoot(plr.Character)
+                    local hum = getHum(plr.Character)
+                    if tr and hum and hum.Health > 0 then
+                        local dist = (tr.Position - myRoot.Position).Magnitude
+                        if dist <= killAuraRadius then
+                            -- Kill via network ownership
+                            pcall(function()
+                                SNO:FireServer(tr, tr.CFrame)
+                                hum.Health = 0
+                            end)
+                        end
+                    end
+                end
+            end
+        end)
+    end
+})
+
+local tpSpawnAuraActive = false
+local tpSpawnAuraRadius = 50
+local tpSpawnAuraConn
+
+AurasGroup:AddSlider("TPSpawnAuraRadius", {
+    Text = " TP Spawn Aura Radius",
+    Default = 50,
+    Min = 10,
+    Max = 200,
+    Rounding = 0,
+    Callback = function(v) tpSpawnAuraRadius = v end
+})
+
+AurasGroup:AddToggle("TPSpawnAura", {
+    Text = " TP to Spawn Aura",
+    Default = false,
+    Callback = function(on)
+        tpSpawnAuraActive = on
+        if tpSpawnAuraConn then tpSpawnAuraConn:Disconnect(); tpSpawnAuraConn = nil end
+        if not on then return end
+        
+        local spawnPos = Workspace:FindFirstChild("SpawningPlatform")
+        if spawnPos then
+            local pp = spawnPos.PrimaryPart or spawnPos:FindFirstChildWhichIsA("BasePart")
+            spawnPos = pp and pp.CFrame + Vector3.new(0,5,0)
+        end
+        
+        tpSpawnAuraConn = RunService.Heartbeat:Connect(function()
+            local myRoot = getRoot(LocalPlayer.Character)
+            if not myRoot then return end
+            for _, plr in ipairs(Players:GetPlayers()) do
+                if plr ~= LocalPlayer and plr.Character then
+                    local tr = getRoot(plr.Character)
+                    if tr and (tr.Position - myRoot.Position).Magnitude <= tpSpawnAuraRadius then
+                        pcall(function()
+                            tr.CFrame = spawnPos
+                        end)
+                    end
+                end
+            end
+        end)
+    end
+})
+
+-- In MiscGroup (the one that already has Packet Lag, etc.)
+local lineLagActive = false
+local lineLagIntensity = 100  -- lines per heartbeat
+
+MiscGroup:AddSlider("LineLagIntensity", {
+    Text = " Line Lag Intensity",
+    Default = 100,
+    Min = 10,
+    Max = 1000,
+    Rounding = 0,
+    Callback = function(v) lineLagIntensity = v end
+})
+
+MiscGroup:AddToggle("LineLag", {
+    Text = " Line Lag",
+    Default = false,
+    Callback = function(on)
+        lineLagActive = on
+        if not on then return end
+        task.spawn(function()
+            while lineLagActive do
+                for _ = 1, lineLagIntensity do
+                    pcall(function()
+                        CreateLine:FireServer(Workspace.SpawnLocation, CFrame.new(0,9e9,0))
+                    end)
+                end
+                task.wait()  -- heartbeat
+            end
+        end)
+    end
+})
+
+-- Inside DefenseGroup, after other anti toggles
+DefenseGroup:AddToggle("DisableVoid", {
+    Text = " Disable Void",
+    Default = false,
+    Callback = function(on)
+        if on then
+            workspace.FallenPartsDestroyHeight = -50000  -- or math.huge
+        else
+            workspace.FallenPartsDestroyHeight = -100   -- default
+        end
+    end
+})
+
+local antiFlingActive = false
+
+PlayerView:AddToggle("AntiFling", {
+    Text = " Anti Fling (Noclip Objects)",
+    Default = false,
+    Callback = function(on)
+        antiFlingActive = on
+        if on then
+            -- Make all non-character, non-terrain parts CanCollide = false
+            for _, part in ipairs(workspace:GetDescendants()) do
+                if part:IsA("BasePart") and not part:IsDescendantOf(Players) and part.Name ~= "Terrain" then
+                    part.CanCollide = false
+                end
+            end
+            -- Keep floor collidable? You can specify exceptions if needed.
+            -- Also set up a descendant added connection to keep new parts noclipped
+            local conn
+            conn = workspace.DescendantAdded:Connect(function(obj)
+                if obj:IsA("BasePart") and not obj:IsDescendantOf(Players) and obj.Name ~= "Terrain" then
+                    obj.CanCollide = false
+                end
+            end)
+            -- Store connection to disconnect later
+            state.antiFlingConn = conn
+        else
+            if state.antiFlingConn then
+                state.antiFlingConn:Disconnect()
+                state.antiFlingConn = nil
+            end
+            -- Restore all collisions (not easily done without backing up). 
+            -- Simple solution: respawn (no automatic restore)
+        end
+    end
+})
+
+MiscGroup:AddButton({
+    Text = " Break PCLD",
+    Func = function()
+        local char = LocalPlayer.Character
+        if not char then return end
+        local hum = getHum(char)
+        if not hum then return end
+        
+        local function resetAndCheck()
+            local oldHealth = hum.Health
+            hum.Health = 0
+            task.wait(0.1)
+            if not char.Parent then
+                -- wait for respawn
+                char = LocalPlayer.CharacterAdded:Wait()
+                hum = getHum(char)
+            end
+            -- check if PCLD exists in workspace
+            local pcl = workspace:FindFirstChild("PlayerCharacterLocationDetector", true)
+            if pcl then
+                Library:Notify({
+                    Title = "PCLD Break",
+                    Description = "✅ PCLD still present or regenerated.",
+                    Time = 3
+                })
+            else
+                Library:Notify({
+                    Title = "PCLD Break",
+                    Description = "❌ PCLD missing!",
+                    Time = 3
+                })
+            end
+        end
+        
+        resetAndCheck()
+        task.wait(0.5)
+        resetAndCheck()
+    end
+})
+
+-- Inside DefenseExtra, add this slider before the AntiInputLag toggle
+local inputLagDelay = 0.1  -- default
+
+DefenseExtra:AddSlider("InputLagDelay", {
+    Text = " Grab/Drop Delay",
+    Default = 0.1,
+    Min = 0.05,
+    Max = 0.3,
+    Rounding = 2,
+    Callback = function(v) inputLagDelay = v end
+})
+
+-- Then replace the existing AntiInputLag toggle code (the spawn loop) with this version that uses inputLagDelay
+DefenseExtra:AddToggle("AntiInputLag", {
+    Text = " Anti Input Lag",
+    Default = false,
+    Callback = function(Value)
+        _G.AntiInputLag = Value
+        if Value then
+            task.spawn(function()
+                local plr = Players.LocalPlayer
+                local char = plr.Character or plr.CharacterAdded:Wait()
+                local hrp = char:WaitForChild("HumanoidRootPart")
+                local SpawnRemote = ReplicatedStorage:WaitForChild("MenuToys"):WaitForChild("SpawnToyRemoteFunction")
+                local SelectedToy = "FoodCoconut"  -- or use the dropdown you already have
+                
+                while _G.AntiInputLag do
+                    local toysFolder = Workspace:FindFirstChild(plr.Name .. "SpawnedInToys")
+                    if not toysFolder then task.wait() continue end
+                    
+                    local toy = toysFolder:FindFirstChild(SelectedToy)
+                    if not toy then
+                        pcall(function()
+                            SpawnRemote:InvokeServer(SelectedToy, hrp.CFrame * CFrame.new(0, 5, 0), Vector3.zero)
+                        end)
+                        local t0 = tick()
+                        repeat
+                            RunService.Heartbeat:Wait()
+                            toysFolder = Workspace:FindFirstChild(plr.Name .. "SpawnedInToys")
+                            toy = toysFolder and toysFolder:FindFirstChild(SelectedToy)
+                        until toy or tick() - t0 > 1 or not _G.AntiInputLag
+                    end
+                    
+                    if toy and toy.Parent then
+                        local holdPart = toy:FindFirstChild("HoldPart")
+                        if holdPart then
+                            pcall(function() holdPart.HoldItemRemoteFunction:InvokeServer(toy, char) end)
+                            task.wait(inputLagDelay)   -- grab delay
+                            pcall(function() holdPart.DropItemRemoteFunction:InvokeServer(toy, hrp.CFrame * CFrame.new(0, 2000, 0), Vector3.zero) end)
+                            task.wait(inputLagDelay)   -- drop delay
+                        end
+                    end
+                    RunService.Heartbeat:Wait()
+                end
+            end)
+        end
+    end
+})
+
+-- In the WhitelistGroup (or add a new groupbox "Protect Friend")
+WhitelistGroup:AddButton({
+    Text = " Give Anti Kick",
+    Func = function()
+        local friend = selectedKickPlayer   -- use selected target
+        if not friend then return end
+        local char = friend.Character
+        if not char then return end
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
+        local function clear()
+            local inv = workspace:FindFirstChild(friend.Name .. "SpawnedInToys")
+            if inv then
+                for _, obj in ipairs(inv:GetChildren()) do
+                    if obj.Name == "AntiKick" then
+                        DestroyToyRemote:FireServer(obj)
+                    end
+                end
+            end
+        end
+        clear()
+        pcall(function()
+            SpawnToy:InvokeServer("NinjaShuriken", hrp.CFrame * CFrame.new(0,12,20), Vector3.zero)
+        end)
+        task.wait(0.5)
+        local shu = workspace:FindFirstChild(friend.Name .. "SpawnedInToys")
+        if shu then
+            shu = shu:FindFirstChild("NinjaShuriken")
+            if shu then
+                shu.Name = "AntiKick"
+                local part = shu:WaitForChild("StickyPart")
+                sno(part)
+                StickyEvent:FireServer(part, hrp:WaitForChild("FirePlayerPart"), CFrame.Angles(0,math.rad(90),math.rad(90)))
+                Library:Notify({Title="Protect", Description="Anti Kick given to "..friend.Name, Time=3})
+            end
+        end
+    end
+})
+
+local antiGrabFriendActive = false
+local antiGrabFriendConn
+
+WhitelistGroup:AddToggle("GiveAntiGrab", {
+    Text = " Give Anti Grab",
+    Default = false,
+    Callback = function(on)
+        antiGrabFriendActive = on
+        if antiGrabFriendConn then
+            antiGrabFriendConn:Disconnect()
+            antiGrabFriendConn = nil
+        end
+        if not on then return end
+        
+        antiGrabFriendConn = RunService.Heartbeat:Connect(function()
+            local friend = selectedKickPlayer
+            if not friend then return end
+            local char = friend.Character
+            if not char then return end
+            if friend:FindFirstChild("IsHeld") and friend.IsHeld.Value then
+                -- grab them back to us?
+                local myRoot = getRoot(LocalPlayer.Character)
+                local fRoot = getRoot(char)
+                if myRoot and fRoot then
+                    pcall(function()
+                        SNO:FireServer(fRoot, fRoot.CFrame)
+                        fRoot.CFrame = myRoot.CFrame * CFrame.new(0,0,-5)
+                        fRoot.Anchored = false
+                    end)
+                end
+                -- also fire struggle
+                pcall(function() Struggle:FireServer(friend) end)
+            end
+        end)
+    end
+})
+
 
 
 local ProfileGroup = Tabs.Main:AddLeftGroupbox(" Profile")
