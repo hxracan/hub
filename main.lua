@@ -4500,23 +4500,20 @@ _G.FZ.SkyGroup:AddButton({
     end
 })
 
--- Inside DefenseGroup, after other anti toggles
-DefenseGroup:AddToggle("DisableVoid", {
-    Text = " Disable Void",
-    Default = false,
-    Callback = function(on)
-        if on then
-            workspace.FallenPartsDestroyHeight = -50000  -- or math.huge
-        else
-            workspace.FallenPartsDestroyHeight = -100   -- default
-        end
-    end
-})
 
--- Unstick Aura
+
+-- ============================================================
+--  ADD THESE TOGGLES AT THE END OF YOUR LIT HUB (before the keep‑alive loop)
+-- ============================================================
+
+-- =========================
+--   AURAS (add to Tabs.Auras)
+-- =========================
+local AurasGroup = Tabs.Auras:AddLeftGroupbox("New Auras")  -- create a new group or use existing
+
+-- UNSTICK AURA (remove anti-kick items from target)
 local unstickAuraActive = false
 local unstickAuraConn
-
 AurasGroup:AddToggle("UnstickAura", {
     Text = "Unstick Aura",
     Default = false,
@@ -4526,7 +4523,7 @@ AurasGroup:AddToggle("UnstickAura", {
         if not on then return end
 
         unstickAuraConn = RunService.Heartbeat:Connect(function()
-            local target = selectedKickPlayer   -- from Attack tab selection
+            local target = selectedKickPlayer
             if not target then return end
             local spawned = workspace:FindFirstChild(target.Name .. "SpawnedInToys")
             if spawned then
@@ -4541,20 +4538,15 @@ AurasGroup:AddToggle("UnstickAura", {
     end
 })
 
--- Kill Aura (non‑Blobman)
+-- KILL AURA (radius-based, non-blob)
 local killAuraActive = false
 local killAuraRadius = 30
 local killAuraConn
-
 AurasGroup:AddSlider("KillAuraRadius", {
     Text = "Kill Aura Radius",
-    Default = 30,
-    Min = 10,
-    Max = 100,
-    Rounding = 0,
+    Default = 30, Min = 10, Max = 100, Rounding = 0,
     Callback = function(v) killAuraRadius = v end
 })
-
 AurasGroup:AddToggle("KillAura", {
     Text = "Kill Aura",
     Default = false,
@@ -4574,7 +4566,7 @@ AurasGroup:AddToggle("KillAura", {
                         local dist = (tr.Position - myRoot.Position).Magnitude
                         if dist <= killAuraRadius then
                             pcall(function()
-                                SNO:FireServer(tr, tr.CFrame)  -- get network ownership
+                                SNO:FireServer(tr, tr.CFrame)   -- take network ownership
                                 hum.Health = 0
                             end)
                         end
@@ -4585,20 +4577,15 @@ AurasGroup:AddToggle("KillAura", {
     end
 })
 
--- TP to Spawn Aura
+-- TP TO SPAWN AURA
 local tpSpawnAuraActive = false
 local tpSpawnAuraRadius = 50
 local tpSpawnAuraConn
-
 AurasGroup:AddSlider("TPSpawnAuraRadius", {
     Text = "TP Spawn Aura Radius",
-    Default = 50,
-    Min = 10,
-    Max = 200,
-    Rounding = 0,
+    Default = 50, Min = 10, Max = 200, Rounding = 0,
     Callback = function(v) tpSpawnAuraRadius = v end
 })
-
 AurasGroup:AddToggle("TPSpawnAura", {
     Text = "TP to Spawn Aura",
     Default = false,
@@ -4613,7 +4600,7 @@ AurasGroup:AddToggle("TPSpawnAura", {
             local pp = spawnPos.PrimaryPart or spawnPos:FindFirstChildWhichIsA("BasePart")
             spawnPos = pp and pp.CFrame + Vector3.new(0,5,0) or CFrame.new(0,100,0)
         else
-            spawnPos = CFrame.new(0,100,0)  -- fallback
+            spawnPos = CFrame.new(0,100,0)
         end
 
         tpSpawnAuraConn = RunService.Heartbeat:Connect(function()
@@ -4631,19 +4618,19 @@ AurasGroup:AddToggle("TPSpawnAura", {
     end
 })
 
--- Line Lag
-local lineLagActive = false
-local lineLagIntensity = 100  -- lines per heartbeat
+-- =========================
+--   MISC (add to Tabs.Misc)
+-- =========================
+local MiscGroup = Tabs.Misc:AddLeftGroupbox("Extra")  -- create a new group
 
+-- LINE LAG (spam lines per second)
+local lineLagActive = false
+local lineLagIntensity = 100
 MiscGroup:AddSlider("LineLagIntensity", {
     Text = "Line Lag Intensity",
-    Default = 100,
-    Min = 10,
-    Max = 1000,
-    Rounding = 0,
+    Default = 100, Min = 10, Max = 1000, Rounding = 0,
     Callback = function(v) lineLagIntensity = v end
 })
-
 MiscGroup:AddToggle("LineLag", {
     Text = "Line Lag",
     Default = false,
@@ -4654,64 +4641,23 @@ MiscGroup:AddToggle("LineLag", {
             while lineLagActive do
                 for _ = 1, lineLagIntensity do
                     pcall(function()
-                        CreateLine:FireServer(Workspace.SpawnLocation, CFrame.new(0, 9e9, 0))
+                        CreateLine:FireServer(Workspace.SpawnLocation, CFrame.new(0,9e9,0))
                     end)
                 end
-                task.wait()   -- heartbeat delay
+                task.wait()
             end
         end)
     end
 })
 
--- Slider for delay
-local inputLagDelay = 0.1
-
-DefenseExtra:AddSlider("InputLagDelay", {
-    Text = "Grab/Drop Delay",
-    Default = 0.1,
-    Min = 0.05,
-    Max = 0.3,
-    Rounding = 2,
-    Callback = function(v) inputLagDelay = v end
-})
-
-local smartNoclip = false
-local smartNoclipConn
-
-PlayerView:AddToggle("SmartNoclip", {
-    Text = "Walk Through Objects",
-    Default = false,
-    Callback = function(on)
-        smartNoclip = on
-        if smartNoclipConn then smartNoclipConn:Disconnect(); smartNoclipConn = nil end
-        if not on then return end
-
-        -- Keep terrain collidable, everything else passable
-        smartNoclipConn = RunService.Stepped:Connect(function()
-            local char = LocalPlayer.Character
-            if not char then return end
-            for _, part in ipairs(char:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    -- Only disable collision if the part we might hit is not terrain and not a main floor
-                    -- We'll let the engine handle it: we set the part's CustomPhysicalProperties to massless?
-                    -- Simpler: disable the character part's CanCollide only when it touches a non‑terrain part
-                    -- But that requires continuous checking.
-                    -- Easier approach: disable CanCollide on the character's root, but keep a downward force to stand on terrain.
-                end
-            end
-        end)
-    end
-})
-
-
+-- BREAK PCLD BUTTON (respawns twice + notification)
 MiscGroup:AddButton({
     Text = "Break PCLD",
     Func = function()
-        local char = LocalPlayer.Character
-        local hum = char and char:FindFirstChildOfClass("Humanoid")
-        if not hum then return end
-
         local function resetAndCheck()
+            local char = LocalPlayer.Character
+            local hum = char and char:FindFirstChildOfClass("Humanoid")
+            if not hum then return end
             hum.Health = 0
             task.wait(0.15)
             if not char.Parent then
@@ -4720,25 +4666,190 @@ MiscGroup:AddButton({
             end
             local pcl = workspace:FindFirstChild("PlayerCharacterLocationDetector", true)
             if pcl then
-                Library:Notify({Title = "PCLD Break", Description = "✅ PCLD present.", Time = 3})
+                Library:Notify({Title="PCLD Break", Description="✅ PCLD present.", Time=3})
             else
-                Library:Notify({Title = "PCLD Break", Description = "❌ PCLD missing!", Time = 3})
+                Library:Notify({Title="PCLD Break", Description="❌ PCLD missing!", Time=3})
             end
         end
-
         resetAndCheck()
         task.wait(0.2)
         resetAndCheck()
     end
 })
 
--- Place this inside the TargetGroup (Attack tab) after the existing "Loop Kick Grab" toggle
+-- =========================
+--   DEFENSE EXTRA (modify existing AntiInputLag toggle)
+-- =========================
+-- Add slider BEFORE the AntiInputLag toggle
+local inputLagDelay = 0.1
+DefenseExtra:AddSlider("InputLagDelay", {
+    Text = "Grab/Drop Delay",
+    Default = 0.1, Min = 0.05, Max = 0.3, Rounding = 2,
+    Callback = function(v) inputLagDelay = v end
+})
 
+-- Replace existing AntiInputLag toggle code with this version:
+-- (If you already have a toggle with the same name, delete the old one and add this)
+DefenseExtra:AddToggle("AntiInputLag", {
+    Text = "Anti Input Lag",
+    Default = false,
+    Callback = function(Value)
+        _G.AntiInputLag = Value
+        if not Value then return end
+        task.spawn(function()
+            local plr = LocalPlayer
+            local char = plr.Character or plr.CharacterAdded:Wait()
+            local hrp = char:WaitForChild("HumanoidRootPart")
+            local SpawnRemote = ReplicatedStorage.MenuToys.SpawnToyRemoteFunction
+            local SelectedToy = "FoodCoconut"  -- or use your dropdown value
+
+            while _G.AntiInputLag do
+                local toysFolder = workspace:FindFirstChild(plr.Name .. "SpawnedInToys")
+                if not toysFolder then task.wait(); continue end
+
+                local toy = toysFolder:FindFirstChild(SelectedToy)
+                if not toy then
+                    pcall(function()
+                        SpawnRemote:InvokeServer(SelectedToy, hrp.CFrame * CFrame.new(0, 5, 0), Vector3.zero)
+                    end)
+                    local t0 = tick()
+                    repeat
+                        RunService.Heartbeat:Wait()
+                        toysFolder = workspace:FindFirstChild(plr.Name .. "SpawnedInToys")
+                        toy = toysFolder and toysFolder:FindFirstChild(SelectedToy)
+                    until toy or tick()-t0 > 1 or not _G.AntiInputLag
+                end
+
+                if toy and toy.Parent then
+                    local holdPart = toy:FindFirstChild("HoldPart")
+                    if holdPart then
+                        pcall(function() holdPart.HoldItemRemoteFunction:InvokeServer(toy, char) end)
+                        task.wait(inputLagDelay)
+                        pcall(function() holdPart.DropItemRemoteFunction:InvokeServer(toy, hrp.CFrame * CFrame.new(0, 2000, 0), Vector3.zero) end)
+                        task.wait(inputLagDelay)
+                    end
+                end
+                RunService.Heartbeat:Wait()
+            end
+        end)
+    end
+})
+
+-- =========================
+--   PLAYER (Walk Through Objects)
+-- =========================
+local smartNoclipActive = false
+local smartNoclipConn
+
+Tabs.Player:AddLeftGroupbox("Player Extra"):AddToggle("SmartNoclip", {
+    Text = "Walk Through Objects",
+    Default = false,
+    Callback = function(on)
+        smartNoclipActive = on
+        if smartNoclipConn then smartNoclipConn:Disconnect(); smartNoclipConn = nil end
+        if not on then return end
+
+        -- Disable all non-character, non-terrain part collisions globally
+        for _, part in ipairs(workspace:GetDescendants()) do
+            if part:IsA("BasePart") and not part:IsDescendantOf(Players) and part.Name ~= "Terrain" then
+                part.CanCollide = false
+            end
+        end
+
+        -- Keep new parts noclipped
+        smartNoclipConn = workspace.DescendantAdded:Connect(function(obj)
+            if obj:IsA("BasePart") and not obj:IsDescendantOf(Players) and obj.Name ~= "Terrain" then
+                obj.CanCollide = false
+            end
+        end)
+    end
+})
+
+-- =========================
+--   WHITELIST / FRIEND PROTECTION
+-- =========================
+local WhitelistGroup = Tabs.Target:AddRightGroupbox("Protect Friend")  -- or use existing WhitelistGroup
+
+-- Give Anti Kick (spawn shuriken on friend)
+WhitelistGroup:AddButton({
+    Text = "Give Anti Kick",
+    Func = function()
+        local friend = selectedKickPlayer
+        if not friend then return end
+        local char = friend.Character
+        if not char then return end
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
+
+        -- Clear existing anti-kick items of friend
+        local inv = workspace:FindFirstChild(friend.Name .. "SpawnedInToys")
+        if inv then
+            for _, obj in ipairs(inv:GetChildren()) do
+                if obj.Name == "AntiKick" then
+                    DestroyToyRemote:FireServer(obj)
+                end
+            end
+        end
+
+        pcall(function()
+            SpawnToy:InvokeServer("NinjaShuriken", hrp.CFrame * CFrame.new(0,12,20), Vector3.zero)
+        end)
+        task.wait(0.5)
+
+        local shu = workspace:FindFirstChild(friend.Name .. "SpawnedInToys")
+        if shu then
+            shu = shu:FindFirstChild("NinjaShuriken")
+            if shu then
+                shu.Name = "AntiKick"
+                local part = shu:WaitForChild("StickyPart")
+                sno(part)
+                StickyEvent:FireServer(part, hrp:WaitForChild("FirePlayerPart"), CFrame.Angles(0,math.rad(90),math.rad(90)))
+                Library:Notify({Title="Protect", Description="Anti Kick given to "..friend.Name, Time=3})
+            end
+        end
+    end
+})
+
+-- Give Anti Grab (auto-rescue friend when held)
+local antiGrabFriendActive = false
+local antiGrabFriendConn
+WhitelistGroup:AddToggle("GiveAntiGrab", {
+    Text = "Give Anti Grab",
+    Default = false,
+    Callback = function(on)
+        antiGrabFriendActive = on
+        if antiGrabFriendConn then antiGrabFriendConn:Disconnect(); antiGrabFriendConn = nil end
+        if not on then return end
+
+        antiGrabFriendConn = RunService.Heartbeat:Connect(function()
+            local friend = selectedKickPlayer
+            if not friend then return end
+            local char = friend.Character
+            if not char then return end
+            if friend:FindFirstChild("IsHeld") and friend.IsHeld.Value then
+                local myRoot = getRoot(LocalPlayer.Character)
+                local fRoot = getRoot(char)
+                if myRoot and fRoot then
+                    pcall(function()
+                        SNO:FireServer(fRoot, fRoot.CFrame)
+                        fRoot.CFrame = myRoot.CFrame * CFrame.new(0,0,-5)
+                        fRoot.Anchored = false
+                    end)
+                end
+                pcall(function() Struggle:FireServer(friend) end)
+            end
+        end)
+    end
+})
+
+-- =========================
+--   ATTACK (Loop Kill toggle using your exact LoopKillFunction)
+-- =========================
 local loopKillAdvancedActive = false
 local loopKillAdvancedTask
 
-TargetGroup:AddToggle("LoopKillAdvanced", {
-    Text = "💀 Loop Kill (Advanced)",
+Tabs.Target:AddRightGroupbox("Attack Extra"):AddToggle("LoopKillAdvanced", {
+    Text = "Loop Kill (Advanced)",
     Default = false,
     Callback = function(on)
         loopKillAdvancedActive = on
@@ -4749,7 +4860,7 @@ TargetGroup:AddToggle("LoopKillAdvanced", {
             end
             local targetName = selectedKickPlayer.Name
             loopKillAdvancedTask = task.spawn(function()
-                -- This is your exact LoopKillFunction, using your remotes
+                -- This is YOUR LoopKillFunction from the Rezonans code
                 local RS = game:GetService("ReplicatedStorage")
                 local GE = RS:WaitForChild("GrabEvents")
                 local target = game.Players:FindFirstChild(targetName)
@@ -4802,8 +4913,6 @@ TargetGroup:AddToggle("LoopKillAdvanced", {
         end
     end
 })
-
-
 
 
 
