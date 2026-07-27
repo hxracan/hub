@@ -4500,6 +4500,314 @@ _G.FZ.SkyGroup:AddButton({
     end
 })
 
+-- ============================================================
+--  REMOVE ANTI-KICK (Attack Tab)
+-- ============================================================
+local RemoveAntiKickGroup = Tabs.Target:AddRightGroupbox("Remove Anti Kick")
+
+local removeAntiKickActive = false
+local removeAntiKickConn
+
+RemoveAntiKickGroup:AddToggle("RemoveAntiKick", {
+    Text = "Remove Anti Kick",
+    Default = false,
+    Callback = function(on)
+        removeAntiKickActive = on
+        if removeAntiKickConn then removeAntiKickConn:Disconnect(); removeAntiKickConn = nil end
+        if not on then return end
+        removeAntiKickConn = RunService.Heartbeat:Connect(function()
+            local target = selectedKickPlayer
+            if not target then return end
+            local spawned = workspace:FindFirstChild(target.Name .. "SpawnedInToys")
+            if spawned then
+                for _, toyName in ipairs({"NinjaKunai", "NinjaShuriken", "AntiKick"}) do
+                    local toy = spawned:FindFirstChild(toyName)
+                    if toy then
+                        pcall(function() DestroyToyRemote:FireServer(toy) end)
+                    end
+                end
+            end
+        end)
+    end
+})
+
+-- ============================================================
+--  UNSTICK AURA (Misc Tab)
+-- ============================================================
+local UnstickAuraMiscGroup = Tabs.Misc:AddRightGroupbox("Unstick Aura")
+
+local unstickAuraMiscActive = false
+local unstickAuraMiscConn
+
+UnstickAuraMiscGroup:AddToggle("UnstickAura", {
+    Text = "Unstick Aura",
+    Default = false,
+    Callback = function(on)
+        unstickAuraMiscActive = on
+        if unstickAuraMiscConn then unstickAuraMiscConn:Disconnect(); unstickAuraMiscConn = nil end
+        if not on then return end
+        unstickAuraMiscConn = RunService.Heartbeat:Connect(function()
+            local target = selectedKickPlayer
+            if not target then return end
+            local spawned = workspace:FindFirstChild(target.Name .. "SpawnedInToys")
+            if spawned then
+                for _, toyName in ipairs({"NinjaKunai", "NinjaShuriken", "AntiKick"}) do
+                    local toy = spawned:FindFirstChild(toyName)
+                    if toy then
+                        pcall(function() DestroyToyRemote:FireServer(toy) end)
+                    end
+                end
+            end
+        end)
+    end
+})
+
+-- ============================================================
+--  PENCIL KICK / PLOT BREAKER (Attack Tab)
+-- ============================================================
+-- Your functions, adapted to use existing remotes
+local activePencils = {}
+
+local function GetHighestGrabbableHitbox(blob)
+    local highest = nil
+    local highestY = -math.huge
+    for _, v in ipairs(blob:GetDescendants()) do
+        if v.Name == "GrabbableHitbox" and v:IsA("BasePart") then
+            local y = v.Position.Y
+            if y > highestY then
+                highestY = y
+                highest = v
+            end
+        end
+    end
+    return highest
+end
+
+local function SetupPencilChar()
+    local char = LP.Character or LP.CharacterAdded:Wait()
+    HumanoidRootPart = char:WaitForChild("HumanoidRootPart")
+    folder = workspace:WaitForChild(LP.Name .. "SpawnedInToys")
+end
+local HumanoidRootPart, folder
+SetupPencilChar()
+LP.CharacterAdded:Connect(SetupPencilChar)
+
+local function SpawnPencil()
+    local pos = HumanoidRootPart.CFrame * CFrame.Angles(-0.605224, -0.321753, 0)
+    task.spawn(function()
+        SpawnToy:InvokeServer("ToolPencil", pos, Vector3.zero)
+    end)
+end
+
+local function WaitForNewPencil(timeout)
+    timeout = timeout or 6
+    local result = nil
+    local done = false
+    local connection
+    connection = folder.ChildAdded:Connect(function(child)
+        if child.Name == "ToolPencil" then
+            result = child
+            done = true
+        end
+    end)
+    local start = tick()
+    while not done and tick() - start < timeout do task.wait() end
+    connection:Disconnect()
+    return result
+end
+
+local function ApplyPermanentLift(pencil)
+    local soundPart = pencil:FindFirstChild("SoundPart")
+    if not soundPart then return end
+    for _, v in ipairs(soundPart:GetChildren()) do
+        if v:IsA("LinearVelocity") then v:Destroy() end
+    end
+    local att = Instance.new("Attachment")
+    att.Parent = soundPart
+end
+
+local function CreateOnePencil()
+    while true do
+        SpawnPencil()
+        local pencil = WaitForNewPencil()
+        if not pencil then
+            task.wait(0.2)
+            continue
+        end
+        task.wait(0.19)
+        pencil.StickyPart.CanTouch = false
+        local soundPart = pencil:FindFirstChild("SoundPart")
+        if not soundPart then continue end
+        SNO:FireServer(soundPart, soundPart.CFrame)  -- uses your existing remote
+        task.wait(0.15)
+        local owner = soundPart:FindFirstChild("PartOwner")
+        if owner and owner.Value == LP.Name then
+            table.insert(activePencils, pencil)
+            ApplyPermanentLift(pencil)
+            return true
+        else
+            DestroyToyRemote:FireServer(pencil)
+        end
+        task.wait(0.2)
+    end
+end
+
+function KickPlayerOnBlob(blob)
+    local created = 0
+    while created < 1 do
+        if CreateOnePencil() then created = created + 1 end
+        task.wait(0.4)
+    end
+    for _, pencil in ipairs(activePencils) do
+        if pencil and pencil.Parent then
+            DestroyLine:FireServer(pencil:FindFirstChildOfClass("BasePart"))
+            local args = {
+                [1] = pencil.StickyPart,
+                [2] = blob:GetChildren()[20],
+                [3] = CFrame.new(1e45, math.huge, 1e98)
+            }
+            StickyEvent:FireServer(unpack(args))
+        end
+    end
+    activePencils = {}
+end
+
+function KickPlayerOnBlob12Kunai(blob)
+    local created = 0
+    while created < 12 do
+        if CreateOnePencil() then created = created + 1 end
+        task.wait(0.4)
+    end
+    for _, pencil in ipairs(activePencils) do
+        if pencil and pencil.Parent then
+            DestroyLine:FireServer(pencil:FindFirstChildOfClass("BasePart"))
+            local args = {
+                [1] = pencil.StickyPart,
+                [2] = blob:GetChildren()[20],
+                [3] = CFrame.new(1e45, math.huge, 1e98)
+            }
+            StickyEvent:FireServer(unpack(args))
+        end
+    end
+    activePencils = {}
+end
+
+function BreakMap()
+    local created = 0
+    while created < 1 do
+        if CreateOnePencil() then created = created + 1 end
+        task.wait(0.4)
+    end
+    for _, pencil in ipairs(activePencils) do
+        if pencil and pencil.Parent then
+            DestroyLine:FireServer(pencil:FindFirstChildOfClass("BasePart"))
+            local args = {
+                [1] = pencil.StickyPart,
+                [2] = workspace.Map.BaseGround:GetChildren()[154],
+                [3] = CFrame.new(1e45, math.huge, 1e98)
+            }
+            StickyEvent:FireServer(unpack(args))
+        end
+    end
+    activePencils = {}
+end
+
+function BreakPlot(...)
+    local plots = {...}
+    local target = #plots
+    local created = 0
+    local pencils = {}
+    while created < target do
+        if CreateOnePencil() then
+            created = created + 1
+            local pencil = activePencils[#activePencils]
+            table.insert(pencils, pencil)
+        end
+        task.wait(0.4)
+    end
+    for i, plot in ipairs(plots) do
+        local pencil = pencils[i]
+        if typeof(pencil) == "Instance" and pencil.Parent then
+            DestroyLine:FireServer(pencil:FindFirstChildOfClass("BasePart"))
+            StickyEvent:FireServer(
+                pencil.StickyPart,
+                plot.PlotArea,
+                CFrame.new(0/0, math.huge, 0/0)
+            )
+        end
+    end
+    activePencils = {}
+end
+
+local PencilGroup = Tabs.Target:AddRightGroupbox("Pencil Attacks")
+PencilGroup:AddButton({
+    Text = "Kick on Blob (1 Pencil)",
+    Func = function()
+        local blob = getBlob()
+        if not blob then
+            Library:Notify({Title="Error", Description="Sit in Blobman first!", Time=3})
+            return
+        end
+        KickPlayerOnBlob(blob)
+    end
+})
+PencilGroup:AddButton({
+    Text = "Kick on Blob (12 Kunai)",
+    Func = function()
+        local blob = getBlob()
+        if not blob then
+            Library:Notify({Title="Error", Description="Sit in Blobman first!", Time=3})
+            return
+        end
+        KickPlayerOnBlob12Kunai(blob)
+    end
+})
+PencilGroup:AddButton({
+    Text = "Break Map",
+    Func = BreakMap
+})
+PencilGroup:AddButton({
+    Text = "Break Plot 3",
+    Func = function() BreakPlot(workspace.Plots.Plot3) end
+})
+
+-- ============================================================
+--  TELEPORT TO HOUSES + SPAWN (Player Tab)
+-- ============================================================
+local HouseGroup = Tabs.Player:AddRightGroupbox("House Teleports")
+local houses = {"Barn", "BlueHouse", "Factory", "GlassHouse", "JapaneseHouse", "PinkRoofHouse", "SpookyHouse", "Train", "TudorHouse"}
+local houseDropdown = HouseGroup:AddDropdown("HouseSelect", {
+    Values = houses,
+    Default = 1,
+    Text = "Select House"
+})
+HouseGroup:AddButton({
+    Text = "TP to House",
+    Func = function()
+        local h = workspace.Waypoints:FindFirstChild(Options.HouseSelect.Value)
+        if h and h:IsA("Model") then
+            local pp = h.PrimaryPart or h:FindFirstChildWhichIsA("BasePart")
+            if pp then
+                local root = getRoot(LP.Character)
+                if root then root.CFrame = pp.CFrame + Vector3.new(0,5,0) end
+            end
+        end
+    end
+})
+HouseGroup:AddButton({
+    Text = "TP to Spawn",
+    Func = function()
+        local s = workspace:FindFirstChild("SpawningPlatform")
+        if s and s:IsA("Model") then
+            local pp = s.PrimaryPart or s:FindFirstChildWhichIsA("BasePart")
+            if pp then
+                local root = getRoot(LP.Character)
+                if root then root.CFrame = pp.CFrame + Vector3.new(0,5,0) end
+            end
+        end
+    end
+})
+
 
 
 local ProfileGroup = Tabs.Main:AddLeftGroupbox(" Profile")
